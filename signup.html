@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SonicEarn - Professional Sign Up</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      max-width: 1100px;
+      width: 100%;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .brand-section {
+      flex: 1;
+      background: linear-gradient(135deg, #007B55 0%, #00563a 100%);
+      color: white;
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-section::before {
+      content: "";
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .brand-section::after {
+      content: "";
+      position: absolute;
+      bottom: -80px;
+      left: -30px;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .logo i {
+      font-size: 32px;
+      background: rgba(255, 255, 255, 0.15);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-content h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+
+    .brand-content p {
+      font-size: 16px;
+      line-height: 1.6;
+      opacity: 0.9;
+      margin-bottom: 25px;
+    }
+
+    .features {
+      margin-top: 30px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+
+    .feature i {
+      background: rgba(255, 255, 255, 0.15);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .signup-section {
+      flex: 1;
+      padding: 50px 40px;
+      position: relative;
+    }
+
+    .welcome-bonus {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #f3f9f1;
+      color: #007B55;
+      border: 1px dashed #007B55;
+      border-radius: 50px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .welcome-bonus i {
+      color: #007B55;
+    }
+
+    .signup-header {
+      margin-bottom: 35px;
+    }
+
+    .signup-header h2 {
+      font-size: 28px;
+      color: #222;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .signup-header p {
+      color: #6c757d;
+      font-size: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-with-icon i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+      font-size: 16px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 14px 14px 45px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: all 0.3s;
+      background: #f8f9fa;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #007B55;
+      box-shadow: 0 0 0 3px rgba(0, 123, 85, 0.1);
+      background: #fff;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #6c757d;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #007B55;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: #00563a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 123, 85, 0.2);
+    }
+
+    .terms {
+      font-size: 13px;
+      color: #6c757d;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .terms a {
+      color: #007B55;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      color: #6c757d;
+      font-size: 15px;
+    }
+
+    .login-link a {
+      color: #007B55;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 25px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .divider span {
+      padding: 0 15px;
+      color: #6c757d;
+      font-size: 14px;
+    }
+
+    .social-login {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .social-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .social-btn:hover {
+      background: #f8f9fa;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+      }
+      
+      .brand-section {
+        padding: 30px;
+      }
+      
+      .signup-section {
+        padding: 40px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="brand-section">
+      <div class="logo">
+        <i class="fas fa-wallet"></i>
+        <h1>SonicEarn</h1>
+      </div>
+      <div class="brand-content">
+        <h2>Start Earning with Every Interaction</h2>
+        <p>Join thousands of users who are earning daily by completing simple tasks, referring friends, and engaging with our platform.</p>
+        
+        <div class="features">
+          <div class="feature">
+            <i class="fas fa-gift"></i>
+            <div>
+              <strong>Welcome Bonus:</strong> Get 2000 UGX instantly upon signup
+            </div>
+          </div>
+          <div class="feature">
+            <i class="fas fa-users"></i>
+            <div>
+              <strong>Referral Program:</strong> Earn commissions for every friend you refer
+            </div>
+          </div>
+          <div class="feature">
+            <i class="fas fa-shield-alt"></i>
+            <div>
+              <strong>Secure Platform:</strong> Your data and earnings are protected
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="signup-section">
+      <div class="welcome-bonus">
+        <i class="fas fa-gift"></i>
+        <span>2000 UGX Welcome Bonus</span>
+      </div>
+      
+      <div class="signup-header">
+        <h2>Create Your Account</h2>
+        <p>Join SonicEarn today and start earning</p>
+      </div>
+      
+      <form id="signupForm">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <div class="input-with-icon">
+            <i class="fas fa-user"></i>
+            <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <div class="input-with-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <div class="input-with-icon">
+            <i class="fas fa-phone"></i>
+            <input type="text" id="phone" class="form-control" placeholder="Enter your phone number" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+            <button type="button" class="password-toggle" id="togglePassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        
+        <button type="button" class="btn" onclick="signUp()">
+          <i class="fas fa-user-plus"></i> Create Account
+        </button>
+        
+        <div class="terms">
+          By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+        </div>
+        
+        <div class="divider">
+          <span>OR</span>
+        </div>
+        
+        <div class="social-login">
+          <button type="button" class="social-btn">
+            <i class="fab fa-google"></i> Google
+          </button>
+          <button type="button" class="social-btn">
+            <i class="fab fa-facebook-f"></i> Facebook
+          </button>
+        </div>
+        
+        <div class="login-link">
+          Already have an account? <a href="login.html">Login here</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcQxF9PKDSM1vtJq13LXggdToAwKR95sg",
+      authDomain: "sonicearn-afdc8.firebaseapp.com",
+      projectId: "sonicearn-afdc8",
+      storageBucket: "sonicearn-afdc8.appspot.com",
+      messagingSenderId: "480466770104",
+      appId: "1:480466770104:web:6dbe482b16b94ec044fc4d",
+      measurementId: "G-PRQ89PL0SE"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Capture referrer from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const referrerPhone = urlParams.get("ref");
+
+    // Password visibility toggle
+    document.getElementById('togglePassword').addEventListener('click', function() {
+      const passwordInput = document.getElementById('password');
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+
+    window.signUp = async function () {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!name || !email || !phone || !password) {
+        alert("Please fill all fields.");
+        return;
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        const userData = {
+          userId: user.uid,
+          name: name,
+          email: email,
+          phone: phone,
+          referrerPhone: referrerPhone || null,
+          referrerId: null,
+          refereesIDs: [],
+          totalEarnings: 2000, // Welcome bonus added
+          totalWithdrawn: 0,
+          totalDeposits: 0,
+          accountBalance: 2000, // Welcome bonus added to balance
+          timestamp: serverTimestamp()
+        };
+
+        await setDoc(doc(db, "users", user.uid), userData);
+
+        window.location.href = "index.html";
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
