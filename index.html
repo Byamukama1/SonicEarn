@@ -630,6 +630,7 @@
   </style>
 </head>
 
+
 <body>
   <!-- Header -->
   <header class="header">
@@ -640,14 +641,13 @@
           <h1>SonicEarn</h1>
         </div>
         <div class="user-actions">
-          <button><i class="fas fa-bell"></i></button>
-          <button><i class="fas fa-cog"></i></button>
+          
         </div>
       </div>
     </div>
   </header>
 
-<div class="container">
+  <div class="container">
     <!-- Account Summary -->
     <section class="account-summary">
       <div class="summary-grid">
@@ -854,15 +854,15 @@
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAcQxF9PKDSM1vtJq13LXggdToAwKR95sg",
-      authDomain: "sonicearn-afdc8.firebaseapp.com",
-      projectId: "sonicearn-afdc8",
-      storageBucket: "sonicearn-afdc8.appspot.com",
-      messagingSenderId: "480466770104",
-      appId: "1:480466770104:web:6dbe482b16b94ec044fc4d",
-      measurementId: "G-PRQ89PL0SE"
-    };
+  const firebaseConfig = {
+  apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
+  authDomain: "sonicearn-a13b3.firebaseapp.com",
+  projectId: "sonicearn-a13b3",
+  storageBucket: "sonicearn-a13b3.firebasestorage.app",
+  messagingSenderId: "538538743721",
+  appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
+  measurementId: "G-XGD292PMYM"
+};
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -873,7 +873,7 @@
     let currentUser = null;
     let userData = null;
 
-   // Check authentication state
+    // Check authentication state
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         // Redirect to login if not authenticated
@@ -904,7 +904,7 @@
       }
     }
 
-    // Load user shares from Firestore
+ // Load user shares from Firestore
     async function loadUserShares() {
       const sharesRef = collection(db, "shares");
       const q = query(sharesRef, where("userId", "==", currentUser.uid));
@@ -1132,5 +1132,50 @@
     document.getElementById("sharesToBuy").addEventListener("input", updateInvestCalculation);
     document.getElementById("sharesToBuyReinvest").addEventListener("input", updateReinvestCalculation);
   </script>
+  
+<script type="module">
+  import { 
+    getAuth, 
+    setPersistence,
+    browserLocalPersistence,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  
+  // Firebase configuration
+  const firebaseConfig = {
+  apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
+  authDomain: "sonicearn-a13b3.firebaseapp.com",
+  projectId: "sonicearn-a13b3",
+  storageBucket: "sonicearn-a13b3.firebasestorage.app",
+  messagingSenderId: "538538743721",
+  appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
+  measurementId: "G-XGD292PMYM"
+};
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Set persistence to LOCAL (remember login across sessions)
+  setPersistence(auth, browserLocalPersistence)
+    .then(() => {
+      // Now set up the auth state listener
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          // User is not logged in, redirect to login page
+          console.log("User not authenticated, redirecting to login");
+          window.location.href = "login.html";
+        } else {
+          console.log("User authenticated:", user.email);
+          // User is logged in, you can proceed with app functionality
+          // This is where you would load the rest of your app functionality
+        }
+      });
+    })
+    .catch((error) => {
+      console.error("Error setting persistence:", error);
+    });
+</script>
 </body>
 </html>
