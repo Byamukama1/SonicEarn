@@ -439,75 +439,74 @@
 
   <!-- Firebase SDK -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // Your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyAcQxF9PKDSM1vtJq13LXggdToAwKR95sg",
-      authDomain: "sonicearn-afdc8.firebaseapp.com",
-      projectId: "sonicearn-afdc8",
-      storageBucket: "sonicearn-afdc8.appspot.com",
-      messagingSenderId: "480466770104",
-      appId: "1:480466770104:web:6dbe482b16b94ec044fc4d",
-      measurementId: "G-PRQ89PL0SE"
-    };
+  // ✅ New Firebase config for sonicearn-a13b3
+  const firebaseConfig = {
+    apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
+    authDomain: "sonicearn-a13b3.firebaseapp.com",
+    projectId: "sonicearn-a13b3",
+    storageBucket: "sonicearn-a13b3.firebasestorage.app",
+    messagingSenderId: "538538743721",
+    appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
+    measurementId: "G-XGD292PMYM"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // Capture referrer from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const referrerPhone = urlParams.get("ref");
+  // Capture referrer from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const referrerPhone = urlParams.get("ref");
 
-    // Password visibility toggle
-    document.getElementById('togglePassword').addEventListener('click', function() {
-      const passwordInput = document.getElementById('password');
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
-      this.querySelector('i').classList.toggle('fa-eye');
-      this.querySelector('i').classList.toggle('fa-eye-slash');
-    });
+  // Toggle password visibility
+  document.getElementById('togglePassword').addEventListener('click', function() {
+    const passwordInput = document.getElementById('password');
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    this.querySelector('i').classList.toggle('fa-eye');
+    this.querySelector('i').classList.toggle('fa-eye-slash');
+  });
 
-    window.signUp = async function () {
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const password = document.getElementById("password").value;
+  window.signUp = async function () {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const password = document.getElementById("password").value;
 
-      if (!name || !email || !phone || !password) {
-        alert("Please fill all fields.");
-        return;
-      }
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        const userData = {
-          userId: user.uid,
-          name: name,
-          email: email,
-          phone: phone,
-          referrerPhone: referrerPhone || null,
-          referrerId: null,
-          refereesIDs: [],
-          totalEarnings: 2000, // Welcome bonus added
-          totalWithdrawn: 0,
-          totalDeposits: 0,
-          accountBalance: 2000, // Welcome bonus added to balance
-          timestamp: serverTimestamp()
-        };
-
-        await setDoc(doc(db, "users", user.uid), userData);
-
-        window.location.href = "index.html";
-      } catch (error) {
-        alert("Error: " + error.message);
-      }
+    if (!name || !email || !phone || !password) {
+      alert("Please fill all fields.");
+      return;
     }
-  </script>
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      const userData = {
+        userId: user.uid,
+        name: name,
+        email: email,
+        phone: phone,
+        referrerPhone: referrerPhone || null,
+        referrerId: null,
+        refereesIDs: [],
+        totalEarnings: 2000, // Welcome bonus
+        totalWithdrawn: 0,
+        totalDeposits: 0,
+        accountBalance: 2000, // Welcome bonus added to balance
+        timestamp: serverTimestamp()
+      };
+
+      await setDoc(doc(db, "users", user.uid), userData);
+      window.location.href = "index.html";
+    } catch (error) {
+      alert("Error: " + error.message);
+    }
+  };
+</script>
 </body>
 </html>
