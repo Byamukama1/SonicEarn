@@ -16,20 +16,26 @@
     :root {
       --primary: #007B55;
       --primary-dark: #00563a;
+      --primary-light: rgba(0, 123, 85, 0.1);
       --secondary: #f8f9fa;
       --accent: #FFC107;
+      --accent-dark: #e0a800;
       --text: #333;
       --text-light: #6c757d;
       --success: #28a745;
+      --danger: #dc3545;
+      --warning: #ffc107;
       --card-bg: #ffffff;
       --bg: #f5f7fa;
+      --border: #e0e0e0;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     body {
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.6;
-      padding-bottom: 70px;
+      padding-bottom: 80px;
     }
 
     .container {
@@ -112,6 +118,18 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .summary-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--primary);
     }
 
     .summary-card h3 {
@@ -119,6 +137,9 @@
       font-weight: 500;
       color: var(--text-light);
       margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .summary-card .value {
@@ -133,6 +154,14 @@
 
     .summary-card .earnings {
       color: var(--success);
+    }
+
+    .summary-card .deposits {
+      color: var(--accent-dark);
+    }
+
+    .summary-card .withdrawn {
+      color: var(--warning);
     }
 
     .action-buttons {
@@ -163,6 +192,8 @@
 
     .btn-primary:hover {
       background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 123, 85, 0.3);
     }
 
     .btn-secondary {
@@ -172,6 +203,7 @@
 
     .btn-secondary:hover {
       background: #dde0e4;
+      transform: translateY(-2px);
     }
 
     .btn-accent {
@@ -180,7 +212,19 @@
     }
 
     .btn-accent:hover {
+      background: var(--accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: var(--text);
+    }
+
+    .btn-warning:hover {
       background: #e0a800;
+      transform: translateY(-2px);
     }
 
     /* Shares Section */
@@ -198,6 +242,18 @@
     .section-header h2 {
       font-size: 20px;
       font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-header .info {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
     }
 
     .shares-grid {
@@ -206,16 +262,39 @@
       gap: 20px;
     }
 
+    .no-shares {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 20px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .no-shares i {
+      font-size: 48px;
+      color: var(--text-light);
+      margin-bottom: 15px;
+    }
+
+    .no-shares p {
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+
     .share-card {
       background: var(--card-bg);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      box-shadow: var(--shadow);
       transition: transform 0.3s;
+      position: relative;
+      border: 1px solid var(--border);
     }
 
     .share-card:hover {
       transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     }
 
     .share-header {
@@ -233,6 +312,18 @@
     .share-price {
       font-size: 28px;
       font-weight: 700;
+    }
+
+    .share-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
     }
 
     .share-body {
@@ -261,18 +352,49 @@
       font-weight: 700;
     }
 
+    .purchase-date {
+      background: var(--primary-light);
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .purchase-date .label {
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .purchase-date div {
+      font-weight: 500;
+    }
+
     .share-footer {
       background: var(--secondary);
       padding: 15px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-top: 1px solid var(--border);
     }
 
     .days-remaining {
       display: flex;
       align-items: center;
       gap: 8px;
+      font-weight: 500;
+    }
+
+    .progress-container {
+      flex: 1;
+      padding-left: 10px;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: var(--text-light);
+      text-align: right;
+      margin-top: 3px;
     }
 
     .progress-bar {
@@ -280,13 +402,28 @@
       background: #e9ecef;
       border-radius: 4px;
       overflow: hidden;
-      margin-top: 5px;
     }
 
     .progress {
       height: 100%;
       background: var(--primary);
-      width: 65%;
+    }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-active {
+      background: rgba(40, 167, 69, 0.1);
+      color: var(--success);
+    }
+
+    .status-completed {
+      background: rgba(220, 53, 69, 0.1);
+      color: var(--danger);
     }
 
     /* How it Works */
@@ -296,12 +433,17 @@
       padding: 25px;
       margin: 30px 0;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
     }
 
     .how-it-works h2 {
       text-align: center;
       margin-bottom: 25px;
       color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     .steps {
@@ -312,24 +454,124 @@
 
     .step {
       text-align: center;
+      background: var(--primary-light);
+      padding: 20px;
+      border-radius: 12px;
+      transition: transform 0.3s;
+    }
+
+    .step:hover {
+      transform: translateY(-5px);
     }
 
     .step-icon {
       width: 70px;
       height: 70px;
-      background: rgba(0, 123, 85, 0.1);
+      background: var(--primary);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 15px;
-      color: var(--primary);
+      color: white;
       font-size: 28px;
     }
 
     .step h3 {
       margin-bottom: 10px;
       color: var(--primary);
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      background: var(--primary);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .modal-header h2 {
+      font-size: 20px;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .info-box {
+      background: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 12px 15px;
+      border-radius: 4px;
+      margin: 15px 0;
+      font-size: 14px;
+    }
+
+    .modal-footer {
+      padding: 15px 25px;
+      background: var(--secondary);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid var(--border);
     }
 
     /* Bottom Navigation */
@@ -339,7 +581,7 @@
       left: 0;
       right: 0;
       background: white;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.1);
       display: flex;
       justify-content: space-around;
       padding: 12px 0;
@@ -380,9 +622,14 @@
       .share-card {
         max-width: 100%;
       }
+      
+      .action-buttons {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
   <!-- Header -->
   <header class="header">
@@ -400,31 +647,34 @@
     </div>
   </header>
 
-  <div class="container">
+<div class="container">
     <!-- Account Summary -->
     <section class="account-summary">
       <div class="summary-grid">
         <div class="summary-card">
-          <h3>Account Balance</h3>
-          <div class="value balance">1,250,000 UGX</div>
+          <h3><i class="fas fa-wallet"></i> Account Balance</h3>
+          <div class="value balance" id="accountBalance">0 UGX</div>
         </div>
         <div class="summary-card">
-          <h3>Total Withdrawn</h3>
-          <div class="value">350,000 UGX</div>
+          <h3><i class="fas fa-money-bill-wave"></i> Total Withdrawn</h3>
+          <div class="value withdrawn" id="totalWithdrawn">0 UGX</div>
         </div>
         <div class="summary-card">
-          <h3>Total Earnings</h3>
-          <div class="value earnings">2,850,000 UGX</div>
+          <h3><i class="fas fa-chart-line"></i> Total Earnings</h3>
+          <div class="value earnings" id="totalEarnings">0 UGX</div>
         </div>
         <div class="summary-card">
-          <h3>Total Deposits</h3>
-          <div class="value">1,500,000 UGX</div>
+          <h3><i class="fas fa-piggy-bank"></i> Total Deposits</h3>
+          <div class="value deposits" id="totalDeposits">0 UGX</div>
         </div>
       </div>
       
       <div class="action-buttons">
-        <button class="btn btn-primary" onclick="location.href='withdraw.html'">
+        <button class="btn btn-primary" onclick="window.location.href='withdraw.html'">
           <i class="fas fa-money-bill-wave"></i> Withdraw
+        </button>
+        <button class="btn btn-warning" onclick="window.location.href='deposit.html'">
+          <i class="fas fa-plus-circle"></i> Deposit
         </button>
         <button class="btn btn-accent" onclick="openInvestModal()">
           <i class="fas fa-chart-line"></i> Invest
@@ -438,148 +688,18 @@
     <!-- Shares Section -->
     <section class="shares-section">
       <div class="section-header">
-        <h2>Your Investment Shares</h2>
+        <h2><i class="fas fa-chart-pie"></i> Your Investment Shares</h2>
         <div class="info">Each share: 10,000 UGX</div>
       </div>
       
-      <div class="shares-grid">
-        <!-- Share Card 1 -->
-        <div class="share-card">
-          <div class="share-header">
-            <h3>Standard Share</h3>
-            <div class="share-price">30,000 UGX</div>
-          </div>
-          <div class="share-body">
-            <div class="share-details">
-              <div class="detail-item">
-                <div class="label">Shares</div>
-                <div class="value">3</div>
-              </div>
-              <div class="detail-item">
-                <div class="label">Daily Earnings</div>
-                <div class="value">6,000 UGX</div>
-              </div>
-              <div class="detail-item">
-                <div class="label">Days Completed</div>
-                <div class="value">15</div>
-              </div>
-              <div class="detail-item">
-                <div class="label">Total Earnings</div>
-                <div class="value">90,000 UGX</div>
-              </div>
-            </div>
-            <div class="purchase-date">
-              <div class="label">Purchased On</div>
-              <div>May 15, 2025</div>
-            </div>
-          </div>
-          <div class="share-footer">
-            <div class="days-remaining">
-              <i class="fas fa-calendar-alt"></i>
-              <div>35 days remaining</div>
-            </div>
-            <div class="progress-container">
-              <div class="progress-bar">
-                <div class="progress"></div>
-              </div>
-              <div class="progress-text">15/50 days</div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Share Card 2 -->
-        <div class="share-card">
-          <div class="share-header">
-            <h3>Standard Share</h3>
-            <div class="share-price">70,000 UGX</div>
-          </div>
-          <div class="share-body">
-            <div class="share-details">
-              <div class="detail-item">
-                <div class="label">Shares</div>
-                <div class="value">7</div>
-              </div>
-              <div class="detail-item">
-                <div class="label">Daily Earnings</div>
-                <div class="value">14,000 UGX</div>
-              </div>
-              <div class="detail-item">
-                <div class="label">Days Completed</div>
-                <div class="value">5</div>
-              </div>
-              <div class="detail-item">
-                <div class="label">Total Earnings</div>
-                <div class="value">70,000 UGX</div>
-              </div>
-            </div>
-            <div class="purchase-date">
-              <div class="label">Purchased On</div>
-              <div>July 20, 2025</div>
-            </div>
-          </div>
-          <div class="share-footer">
-            <div class="days-remaining">
-              <i class="fas fa-calendar-alt"></i>
-              <div>45 days remaining</div>
-            </div>
-            <div class="progress-container">
-              <div class="progress-bar">
-                <div class="progress" style="width: 10%"></div>
-              </div>
-              <div class="progress-text">5/50 days</div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Share Card 3 -->
-        <div class="share-card">
-          <div class="share-header">
-            <h3>Completed Share</h3>
-            <div class="share-price">50,000 UGX</div>
-          </div>
-          <div class="share-body">
-            <div class="share-details">
-              <div class="detail-item">
-                <div class="label">Shares</div>
-                <div class="value">5</div>
-              </div>
-              <div class="detail-item">
-                <div class="label">Daily Earnings</div>
-                <div class="value">10,000 UGX</div>
-              </div>
-              <div class="detail-item">
-                <div class="label">Days Completed</div>
-                <div class="value">50</div>
-              </div>
-              <div class="detail-item">
-                <div class="label">Total Earnings</div>
-                <div class="value">500,000 UGX</div>
-              </div>
-            </div>
-            <div class="purchase-date">
-              <div class="label">Purchased On</div>
-              <div>Mar 10, 2025</div>
-            </div>
-          </div>
-          <div class="share-footer">
-            <div class="days-remaining">
-              <i class="fas fa-check-circle" style="color: var(--success)"></i>
-              <div>Completed</div>
-            </div>
-            <div class="progress-container">
-              <div class="progress-bar">
-                <div class="progress" style="width: 100%"></div>
-              </div>
-              <div class="progress-text">50/50 days</div>
-            </div>
-          </div>
-        </div>
+      <div class="shares-grid" id="sharesContainer">
+        <!-- Shares will be loaded here from Firebase -->
       </div>
     </section>
     
     <!-- How it Works -->
     <section class="how-it-works">
-      <h2>How SonicEarn Works</h2>
+      <h2><i class="fas fa-lightbulb"></i> How SonicEarn Works</h2>
       <div class="steps">
         <div class="step">
           <div class="step-icon">
@@ -613,37 +733,404 @@
     </section>
   </div>
   
+  <!-- Invest Modal -->
+  <div class="modal" id="investModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Invest Uninvested Deposit</h2>
+        <button class="close-modal" onclick="closeModal('investModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Available Uninvested Deposit</label>
+          <div class="form-control" id="availableDeposit">0 UGX</div>
+        </div>
+        
+        <div class="info-box">
+          Each share costs 10,000 UGX. You can purchase whole shares only (no fractional shares).
+        </div>
+        
+        <div class="form-group">
+          <label>Number of Shares to Purchase</label>
+          <input type="number" class="form-control" id="sharesToBuy" min="1" value="1">
+        </div>
+        
+        <div class="form-group">
+          <label>Total Investment Amount</label>
+          <div class="form-control" id="investmentAmount">0 UGX</div>
+        </div>
+        
+        <div class="form-group">
+          <label>Estimated Daily Earnings</label>
+          <div class="form-control" id="dailyEarnings">0 UGX</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('investModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="purchaseShares('deposit')">Confirm Purchase</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Reinvest Modal -->
+  <div class="modal" id="reinvestModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Reinvest Account Balance</h2>
+        <button class="close-modal" onclick="closeModal('reinvestModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Available Account Balance</label>
+          <div class="form-control" id="availableBalance">0 UGX</div>
+        </div>
+        
+        <div class="info-box">
+          Each share costs 10,000 UGX. You can purchase whole shares only (no fractional shares).
+        </div>
+        
+        <div class="form-group">
+          <label>Number of Shares to Purchase</label>
+          <input type="number" class="form-control" id="sharesToBuyReinvest" min="1" value="1">
+        </div>
+        
+        <div class="form-group">
+          <label>Total Investment Amount</label>
+          <div class="form-control" id="investmentAmountReinvest">0 UGX</div>
+        </div>
+        
+        <div class="form-group">
+          <label>Estimated Daily Earnings</label>
+          <div class="form-control" id="dailyEarningsReinvest">0 UGX</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('reinvestModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="purchaseShares('balance')">Confirm Purchase</button>
+      </div>
+    </div>
+  </div>
+  
   <!-- Bottom Navigation -->
   <nav class="bottom-nav">
-    <a href="#" class="nav-item active">
+    <a href="index.html" class="nav-item active">
       <i class="fas fa-home"></i>
       <span>Home</span>
     </a>
-    <a href="#" class="nav-item">
+    <a href="shares.html" class="nav-item">
       <i class="fas fa-chart-pie"></i>
       <span>Shares</span>
     </a>
-    <a href="#" class="nav-item">
+    <a href="team.html" class="nav-item">
       <i class="fas fa-users"></i>
       <span>Team</span>
     </a>
-    <a href="#" class="nav-item">
+    <a href="account.html" class="nav-item">
       <i class="fas fa-user"></i>
       <span>Account</span>
     </a>
   </nav>
+  
+    <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc, 
+      setDoc, 
+      updateDoc, 
+      collection, 
+      addDoc, 
+      query, 
+      where, 
+      onSnapshot, 
+      serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <!-- Invest Modal (Conceptual) -->
-  <script>
-    function openInvestModal() {
-      alert("Invest function: This would open a modal to purchase new shares using your account balance.");
-      // In a real implementation, this would show a modal to select how many shares to buy
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcQxF9PKDSM1vtJq13LXggdToAwKR95sg",
+      authDomain: "sonicearn-afdc8.firebaseapp.com",
+      projectId: "sonicearn-afdc8",
+      storageBucket: "sonicearn-afdc8.appspot.com",
+      messagingSenderId: "480466770104",
+      appId: "1:480466770104:web:6dbe482b16b94ec044fc4d",
+      measurementId: "G-PRQ89PL0SE"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Global user data
+    let currentUser = null;
+    let userData = null;
+
+   // Check authentication state
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // Redirect to login if not authenticated
+        window.location.href = "login.html";
+        return;
+      }
+      
+      currentUser = user;
+      await loadUserData();
+      await loadUserShares();
+    });
+
+    // Load user data from Firestore
+    async function loadUserData() {
+      const userRef = doc(db, "users", currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      
+      if (userSnap.exists()) {
+        userData = userSnap.data();
+        
+        // Update UI with user data
+        document.getElementById("accountBalance").innerText = `${formatCurrency(userData.accountBalance)} UGX`;
+        document.getElementById("totalWithdrawn").innerText = `${formatCurrency(userData.totalWithdrawn)} UGX`;
+        document.getElementById("totalEarnings").innerText = `${formatCurrency(userData.totalEarnings)} UGX`;
+        document.getElementById("totalDeposits").innerText = `${formatCurrency(userData.totalDeposits)} UGX`;
+      } else {
+        console.log("User document not found");
+      }
     }
-    
-    function openReinvestModal() {
-      alert("Reinvest function: This would open a modal to purchase additional shares using your existing account balance.");
-      // In a real implementation, this would show a modal to reinvest earnings
+
+    // Load user shares from Firestore
+    async function loadUserShares() {
+      const sharesRef = collection(db, "shares");
+      const q = query(sharesRef, where("userId", "==", currentUser.uid));
+      
+      onSnapshot(q, (snapshot) => {
+        const container = document.getElementById("sharesContainer");
+        container.innerHTML = "";
+        
+        if (snapshot.empty) {
+          container.innerHTML = `
+            <div class="no-shares">
+              <i class="fas fa-chart-pie"></i>
+              <h3>No Investment Shares Yet</h3>
+              <p>You haven't purchased any shares yet. Start investing to earn daily returns!</p>
+              <button class="btn btn-primary" onclick="openInvestModal()">
+                <i class="fas fa-chart-line"></i> Invest Now
+              </button>
+            </div>
+          `;
+          return;
+        }
+        
+        snapshot.forEach((doc) => {
+          const share = doc.data();
+          const daysCompleted = share.daysCompleted || 0;
+          const daysRemaining = 50 - daysCompleted;
+          const progress = (daysCompleted / 50) * 100;
+          const totalEarning = share.dailyEarning * daysCompleted;
+          const status = daysCompleted < 50 ? "Active" : "Completed";
+          
+          const shareCard = `
+            <div class="share-card">
+              <div class="share-header">
+                <h3>${share.shareType || "Standard Share"}</h3>
+                <div class="share-price">${formatCurrency(share.investmentAmount)} UGX</div>
+                <div class="share-badge status-${status === "Active" ? "active" : "completed"}">${status}</div>
+              </div>
+              <div class="share-body">
+                <div class="share-details">
+                  <div class="detail-item">
+                    <div class="label">Shares</div>
+                    <div class="value">${share.numberOfShares}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="label">Daily Earnings</div>
+                    <div class="value">${formatCurrency(share.dailyEarning)} UGX</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="label">Days Completed</div>
+                    <div class="value">${daysCompleted}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="label">Total Earnings</div>
+                    <div class="value">${formatCurrency(totalEarning)} UGX</div>
+                  </div>
+                </div>
+                <div class="purchase-date">
+                  <div class="label">Purchased On</div>
+                  <div>${formatDate(share.purchaseDate)}</div>
+                </div>
+              </div>
+              <div class="share-footer">
+                <div class="days-remaining">
+                  <i class="fas fa-calendar-alt"></i>
+                  <div>${daysRemaining} days remaining</div>
+                </div>
+                <div class="progress-container">
+                  <div class="progress-bar">
+                    <div class="progress" style="width: ${progress}%"></div>
+                  </div>
+                  <div class="progress-text">${daysCompleted}/50 days</div>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          container.innerHTML += shareCard;
+        });
+      });
     }
+
+    // Open invest modal
+    window.openInvestModal = function() {
+      if (!userData) return;
+      
+      const uninvestedDeposit = userData.uninvestedDeposit || 0;
+      const maxShares = Math.floor(uninvestedDeposit / 10000);
+      
+      document.getElementById("availableDeposit").innerText = `${formatCurrency(uninvestedDeposit)} UGX`;
+      document.getElementById("sharesToBuy").value = maxShares > 0 ? 1 : 0;
+      document.getElementById("sharesToBuy").max = maxShares;
+      updateInvestCalculation();
+      
+      document.getElementById("investModal").style.display = "flex";
+    }
+
+    // Open reinvest modal
+    window.openReinvestModal = function() {
+      if (!userData) return;
+      
+      const accountBalance = userData.accountBalance || 0;
+      const maxShares = Math.floor(accountBalance / 10000);
+      
+      document.getElementById("availableBalance").innerText = `${formatCurrency(accountBalance)} UGX`;
+      document.getElementById("sharesToBuyReinvest").value = maxShares > 0 ? 1 : 0;
+      document.getElementById("sharesToBuyReinvest").max = maxShares;
+      updateReinvestCalculation();
+      
+      document.getElementById("reinvestModal").style.display = "flex";
+    }
+
+    // Close modal
+    window.closeModal = function(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
+
+    // Update invest calculation
+    function updateInvestCalculation() {
+      const shares = parseInt(document.getElementById("sharesToBuy").value) || 0;
+      const investmentAmount = shares * 10000;
+      const dailyEarning = investmentAmount * 0.2;
+      
+      document.getElementById("investmentAmount").innerText = `${formatCurrency(investmentAmount)} UGX`;
+      document.getElementById("dailyEarnings").innerText = `${formatCurrency(dailyEarning)} UGX`;
+    }
+
+    // Update reinvest calculation
+    function updateReinvestCalculation() {
+      const shares = parseInt(document.getElementById("sharesToBuyReinvest").value) || 0;
+      const investmentAmount = shares * 10000;
+      const dailyEarning = investmentAmount * 0.2;
+      
+      document.getElementById("investmentAmountReinvest").innerText = `${formatCurrency(investmentAmount)} UGX`;
+      document.getElementById("dailyEarningsReinvest").innerText = `${formatCurrency(dailyEarning)} UGX`;
+    }
+
+    // Purchase shares (either from deposit or balance)
+    async function purchaseShares(source) {
+      let sharesInput, modalId;
+      
+      if (source === 'deposit') {
+        sharesInput = document.getElementById("sharesToBuy");
+        modalId = "investModal";
+      } else {
+        sharesInput = document.getElementById("sharesToBuyReinvest");
+        modalId = "reinvestModal";
+      }
+      
+      const shares = parseInt(sharesInput.value) || 0;
+      
+      if (shares < 1) {
+        alert("Please enter a valid number of shares (minimum 1)");
+        return;
+      }
+      
+      const investmentAmount = shares * 10000;
+      const dailyEarning = investmentAmount * 0.2;
+      
+      // Check if user has enough funds
+      if (source === 'deposit') {
+        if (userData.uninvestedDeposit < investmentAmount) {
+          alert("Insufficient uninvested deposit");
+          return;
+        }
+      } else {
+        if (userData.accountBalance < investmentAmount) {
+          alert("Insufficient account balance");
+          return;
+        }
+      }
+      
+      try {
+        // Create new share document
+        const shareData = {
+          userId: currentUser.uid,
+          numberOfShares: shares,
+          investmentAmount: investmentAmount,
+          dailyEarning: dailyEarning,
+          purchaseDate: serverTimestamp(),
+          daysCompleted: 0,
+          shareType: "Standard Share"
+        };
+        
+        await addDoc(collection(db, "shares"), shareData);
+        
+        // Update user document
+        const userRef = doc(db, "users", currentUser.uid);
+        const updates = {
+          totalDeposits: userData.totalDeposits + (source === 'deposit' ? 0 : investmentAmount),
+          uninvestedDeposit: userData.uninvestedDeposit - (source === 'deposit' ? investmentAmount : 0),
+          accountBalance: userData.accountBalance - (source === 'balance' ? investmentAmount : 0)
+        };
+        
+        await updateDoc(userRef, updates);
+        
+        alert(`Successfully purchased ${shares} share(s)!`);
+        closeModal(modalId);
+        
+        // Reload user data
+        await loadUserData();
+      } catch (error) {
+        console.error("Error purchasing shares:", error);
+        alert("Failed to purchase shares: " + error.message);
+      }
+    }
+
+    // Format currency
+    function formatCurrency(amount) {
+      return amount?.toLocaleString('en-US') || "0";
+    }
+
+    // Format date
+    function formatDate(timestamp) {
+      if (!timestamp) return "N/A";
+      
+      const date = timestamp.toDate();
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    // Attach event listeners
+    document.getElementById("sharesToBuy").addEventListener("input", updateInvestCalculation);
+    document.getElementById("sharesToBuyReinvest").addEventListener("input", updateReinvestCalculation);
   </script>
 </body>
 </html>
