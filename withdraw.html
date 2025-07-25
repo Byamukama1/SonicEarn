@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html><html lang="en">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Withdraw - SonicEarn</title>
@@ -22,7 +23,13 @@
     h2 {
       color: #2a8c4a;
       text-align: center;
+      margin-bottom: 10px;
+    }
+    #balanceDisplay {
+      text-align: center;
+      font-weight: bold;
       margin-bottom: 20px;
+      color: #222;
     }
     input {
       width: 100%;
@@ -68,41 +75,35 @@
     .history {
       margin-top: 20px;
     }
-    .history h3 {
-      margin-bottom: 10px;
-      color: #2a8c4a;
-    }
     .history-item {
-      background-color: #f9f9f9;
+      background: #f9f9f9;
       padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      border: 1px solid #ddd;
-      font-size: 14px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border-left: 4px solid #2a8c4a;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h2><i class="fas fa-hand-holding-usd"></i> Withdraw</h2>
+    <div id="balanceDisplay">Current Balance: UGX <span id="currentBalance">Loading...</span></div>
     <input type="text" id="holderName" placeholder="Holder Name" required />
     <input type="tel" id="phoneNumber" placeholder="Phone Number" required />
     <input type="number" id="amount" placeholder="Withdraw Amount" required /><button class="btn" id="submitWithdraw">Submit Withdraw</button>
 
 <div class="note">
-  ⚠️ First confirm that the information is correct before sending to avoid account disruptions. Avoid reversals otherwise your account will get a penalty.
+  ⚠️ Make sure you have enough account balance 
 </div>
 
-<div class="history" id="withdrawHistory">
-  <h3>Withdraw History</h3>
-  <div id="historyList">Loading...</div>
-</div>
+<div class="history" id="withdrawHistory"></div>
 
 
 
   </div>  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
@@ -115,16 +116,47 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let currentUser;
+    let currentBalance = 0;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return window.location.href = "login.html";
+      currentUser = user;
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        currentBalance = userDoc.data().accountBalance || 0;
+        document.getElementById("currentBalance").textContent = currentBalance.toLocaleString();
+        loadWithdrawHistory();
+      }
+    });
+
+    async function loadWithdrawHistory() {
+      const q = query(collection(db, "withdraws"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+      const historyContainer = document.getElementById("withdrawHistory");
+      historyContainer.innerHTML = "<h4>Recent Withdrawals</h4>";
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const item = document.createElement("div");
+        item.classList.add("history-item");
+        item.innerHTML = `<strong>Phone:</strong> ${data.phoneNumber}<br>
+                          <strong>Amount:</strong> UGX ${data.amount.toLocaleString()}<br>
+                          <strong>Status:</strong> ${data.status}`;
+        historyContainer.appendChild(item);
+      });
+    }
 
     document.getElementById("submitWithdraw").addEventListener("click", async () => {
       const holderName = document.getElementById("holderName").value;
       const phoneNumber = document.getElementById("phoneNumber").value;
       const amount = parseFloat(document.getElementById("amount").value);
 
-      if (!holderName || !phoneNumber || !amount) {
-        alert("Please fill in all fields.");
-        return;
-      }
+      if (!holderName || !phoneNumber || !amount) return alert("Please fill in all fields.");
+      if (amount < 5000) return alert("Minimum withdraw is UGX 5000.");
+      if (amount > currentBalance) return alert("You cannot withdraw more than your account balance.");
 
       try {
         await addDoc(collection(db, "withdraws"), {
@@ -134,46 +166,24 @@
           status: "Pending",
           createdAt: serverTimestamp()
         });
+
+        const userRef = doc(db, "users", currentUser.uid);
+        await updateDoc(userRef, {
+          accountBalance: currentBalance - amount
+        });
+
         alert("Withdraw request submitted successfully.");
         document.getElementById("holderName").value = "";
         document.getElementById("phoneNumber").value = "";
         document.getElementById("amount").value = "";
+        document.getElementById("currentBalance").textContent = (currentBalance - amount).toLocaleString();
+        currentBalance -= amount;
         loadWithdrawHistory();
-      } catch (error) {
-        console.error("Error submitting withdraw:", error);
-        alert("Failed to submit withdraw request.");
+
+      } catch (err) {
+        console.error("Withdraw error:", err);
+        alert("Failed to submit withdraw.");
       }
     });
-
-    async function loadWithdrawHistory() {
-      const historyList = document.getElementById("historyList");
-      historyList.innerHTML = "";
-
-      try {
-        const q = query(collection(db, "withdraws"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        if (snapshot.empty) {
-          historyList.innerHTML = "No withdraws yet.";
-          return;
-        }
-
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const div = document.createElement("div");
-          div.className = "history-item";
-          div.innerHTML = `
-            <strong>Phone:</strong> ${data.phoneNumber}<br/>
-            <strong>Amount:</strong> UGX ${data.amount}<br/>
-            <strong>Status:</strong> ${data.status}
-          `;
-          historyList.appendChild(div);
-        });
-      } catch (error) {
-        historyList.innerHTML = "Failed to load history.";
-        console.error("Error fetching history:", error);
-      }
-    }
-
-    loadWithdrawHistory();
   </script></body>
 </html>
