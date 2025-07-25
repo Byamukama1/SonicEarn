@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -88,21 +89,26 @@
   <div class="container">
     <h2><i class="fas fa-hand-holding-usd"></i> Withdraw</h2>
     <div id="balanceDisplay">Current Balance: UGX <span id="currentBalance">Loading...</span></div>
+    
     <input type="text" id="holderName" placeholder="Holder Name" required />
     <input type="tel" id="phoneNumber" placeholder="Phone Number" required />
-    <input type="number" id="amount" placeholder="Withdraw Amount" required /><button class="btn" id="submitWithdraw">Submit Withdraw</button>
+    <input type="number" id="amount" placeholder="Withdraw Amount" required />
+    
+    <button class="btn" id="submitWithdraw">Submit Withdraw</button>
 
-<div class="note">
-  ⚠️ Make sure you have enough account balance 
-</div>
+    <div class="note">
+      ⚠️ Make sure you have enough account balance 
+    </div>
 
-<div class="history" id="withdrawHistory"></div>
+    <div class="history" id="withdrawHistory"></div>
+  </div>
 
-
-
-  </div>  <script type="module">
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getFirestore, collection, addDoc, serverTimestamp, getDocs,
+      query, orderBy, doc, getDoc, updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
@@ -136,16 +142,18 @@
       const q = query(collection(db, "withdraws"), orderBy("createdAt", "desc"));
       const snapshot = await getDocs(q);
       const historyContainer = document.getElementById("withdrawHistory");
-      historyContainer.innerHTML = "<h4>Recent Withdrawals</h4>";
+      historyContainer.innerHTML = "<h4>Paid Withdrawals</h4>";
 
       snapshot.forEach(docSnap => {
         const data = docSnap.data();
-        const item = document.createElement("div");
-        item.classList.add("history-item");
-        item.innerHTML = `<strong>Phone:</strong> ${data.phoneNumber}<br>
-                          <strong>Amount:</strong> UGX ${data.amount.toLocaleString()}<br>
-                          <strong>Status:</strong> ${data.status}`;
-        historyContainer.appendChild(item);
+        if (data.status === "Paid") {
+          const item = document.createElement("div");
+          item.classList.add("history-item");
+          item.innerHTML = `<strong>Phone:</strong> ${data.phoneNumber}<br>
+                            <strong>Amount:</strong> UGX ${data.amount.toLocaleString()}<br>
+                            <strong>Status:</strong> ${data.status}`;
+          historyContainer.appendChild(item);
+        }
       });
     }
 
@@ -185,5 +193,6 @@
         alert("Failed to submit withdraw.");
       }
     });
-  </script></body>
+  </script>
+</body>
 </html>
