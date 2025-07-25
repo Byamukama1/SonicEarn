@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Make a Deposit - SonicEarn</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }.container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+h2 {
+  color: #2e7d32;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.note {
+  font-size: 14px;
+  background-color: #fff9e6;
+  color: #a05a00;
+  padding: 12px;
+  border-left: 5px solid #fbc02d;
+  margin-top: 20px;
+  border-radius: 6px;
+}
+
+.history {
+  margin-top: 30px;
+}
+
+.deposit-item {
+  background-color: #f1f8e9;
+  border-left: 4px solid #2e7d32;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>💰 Make a Deposit</h2>
+    <label>Phone Holder Name</label>
+    <input type="text" id="holderName" placeholder="Enter name" /><label>Phone Number</label>
+<input type="text" id="phoneNumber" placeholder="Enter phone number" />
+
+<label>Amount (UGX)</label>
+<input type="number" id="amount" placeholder="Enter amount" />
+
+<button id="submitBtn">Submit</button>
+
+<div class="note">
+  <strong>NOTE:</strong> Please verify that all information is correct before submitting. Reversing transactions may lead to penalties or account restrictions.
+</div>
+
+<div class="history">
+  <h3>📋 Deposit History</h3>
+  <div id="depositList">Loading...</div>
+</div>
+
+  </div>  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
+      authDomain: "sonicearn-a13b3.firebaseapp.com",
+      projectId: "sonicearn-a13b3",
+      storageBucket: "sonicearn-a13b3.appspot.com",
+      messagingSenderId: "538538743721",
+      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const submitBtn = document.getElementById("submitBtn");
+    const depositList = document.getElementById("depositList");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const loadHistory = async () => {
+        const q = query(collection(db, "deposits"), where("userId", "==", user.uid));
+        const snapshot = await getDocs(q);
+        depositList.innerHTML = "";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const div = document.createElement("div");
+          div.className = "deposit-item";
+          div.innerHTML = `
+            <strong>${data.phone}</strong><br>
+            Amount: UGX ${data.amount} <br>
+            Status: <strong>${data.status || "Pending"}</strong>
+          `;
+          depositList.appendChild(div);
+        });
+      };
+
+      loadHistory();
+
+      submitBtn.onclick = async () => {
+        const name = document.getElementById("holderName").value.trim();
+        const phone = document.getElementById("phoneNumber").value.trim();
+        const amount = parseInt(document.getElementById("amount").value);
+
+        if (!name || !phone || !amount) {
+          alert("Please fill in all fields correctly.");
+          return;
+        }
+
+        await addDoc(collection(db, "deposits"), {
+          name,
+          phone,
+          amount,
+          userId: user.uid,
+          status: "Pending",
+          timestamp: serverTimestamp()
+        });
+
+        alert("Deposit submitted successfully.");
+        document.getElementById("holderName").value = "";
+        document.getElementById("phoneNumber").value = "";
+        document.getElementById("amount").value = "";
+        loadHistory();
+      };
+    });
+  </script></body>
+</html>
