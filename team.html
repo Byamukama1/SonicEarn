@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,71 +12,69 @@
       padding: 20px;
       background-color: #ffffff;
       color: #222;
-    }h2 {
-  color: #2e7d32;
-  text-align: center;
-}
-
-.referral-link-container {
-  background-color: #e8f5e9;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 25px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.referral-link-container input {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-top: 8px;
-}
-
-.copy-btn {
-  margin-top: 10px;
-  background-color: #2e7d32;
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.referral-list {
-  margin-top: 20px;
-}
-
-.referral-card {
-  background-color: #f1f8e9;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.08);
-  margin-bottom: 15px;
-}
-
-.referral-card p {
-  margin: 5px 0;
-}
-
+    }
+    h2 {
+      color: #2e7d32;
+      text-align: center;
+    }
+    .referral-link-container {
+      background-color: #e8f5e9;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .referral-link-container input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+    .copy-btn {
+      margin-top: 10px;
+      background-color: #2e7d32;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .referral-list {
+      margin-top: 20px;
+    }
+    .referral-card {
+      background-color: #f1f8e9;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+      margin-bottom: 15px;
+    }
+    .referral-card p {
+      margin: 5px 0;
+    }
   </style>
 </head>
 <body>
-  <h2>👥 My Team</h2>  <div class="referral-link-container">
+  <h2>👥 My Team</h2>
+
+  <div class="referral-link-container">
     <label><strong>Your Referral Link:</strong></label>
-    <input type="text" id="referralLink" readonly value="Loading...">
+    <input type="text" id="referralLink" readonly value="">
     <button class="copy-btn" onclick="copyReferralLink()">Copy Link</button>
     <small>Earn 25% commission on total deposit made by each referral!</small>
-  </div>  <div class="referral-list" id="referralList">
+  </div>
+
+  <div class="referral-list" id="referralList">
     <h3 style="color:#2e7d32;">Your Referrals:</h3>
-    <p>Loading...</p>
+    <p></p>
   </div> 
-  
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -107,20 +106,33 @@
         // Load referrals
         const referralsQuery = query(collection(db, "users"), where("referrerPhone", "==", phone));
         const snapshot = await getDocs(referralsQuery);
-        const list = document.getElementById("referralsList");
+        const list = document.getElementById("referralList");
+
         if (snapshot.empty) {
-          list.innerHTML = "<p>No referrals yet.</p>";
+          list.innerHTML += "<p>No referrals yet.</p>";
         } else {
-          list.innerHTML = "";
+          list.innerHTML += ""; // Keep title intact
+          let refs = [];
           snapshot.forEach(doc => {
             const ref = doc.data();
+            refs.push(ref);
+          });
+
+          // Shuffle the refs array randomly
+          refs.sort(() => 0.5 - Math.random());
+
+          refs.forEach(ref => {
             const phone = ref.phone || "N/A";
             const amount = ref.totalDeposits || 0;
             const commission = Math.floor(amount * 0.25);
-            const item = document.createElement("div");
-            item.innerHTML = `<strong>${phone}</strong> - Deposited: UGX ${amount.toLocaleString()} — You Earn: UGX ${commission.toLocaleString()}`;
-            item.style.marginBottom = "10px";
-            list.appendChild(item);
+            const card = document.createElement("div");
+            card.classList.add("referral-card");
+            card.innerHTML = `
+              <p><strong>📱 ${phone}</strong></p>
+              <p>💰 Deposited: UGX ${amount.toLocaleString()}</p>
+              <p>🎉 You Earn: UGX ${commission.toLocaleString()}</p>
+            `;
+            list.appendChild(card);
           });
         }
       }
@@ -129,11 +141,11 @@
     }
   });
 
-  // Copy link function
+  // Copy referral link
   window.copyReferralLink = function () {
     const input = document.getElementById("referralLink");
     input.select();
-    input.setSelectionRange(0, 99999); // Mobile support
+    input.setSelectionRange(0, 99999);
     navigator.clipboard.writeText(input.value).then(() => {
       alert("Referral link copied to clipboard!");
     }).catch(err => {
