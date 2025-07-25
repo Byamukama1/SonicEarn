@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SonicEarn - Investment Dashboard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
   <style>
     * {
       margin: 0;
@@ -18,13 +21,12 @@
       --primary-dark: #00563a;
       --primary-light: rgba(0, 123, 85, 0.1);
       --secondary: #f8f9fa;
-      --accent: #FFC107;
-      --accent-dark: #e0a800;
+      --accent: #1a73e8;
+      --accent-dark: #0d5cb6;
       --text: #333;
       --text-light: #6c757d;
       --success: #28a745;
       --danger: #dc3545;
-      --warning: #ffc107;
       --card-bg: #ffffff;
       --bg: #f5f7fa;
       --border: #e0e0e0;
@@ -157,11 +159,11 @@
     }
 
     .summary-card .deposits {
-      color: var(--accent-dark);
+      color: var(--accent);
     }
 
     .summary-card .withdrawn {
-      color: var(--warning);
+      color: #6c757d;
     }
 
     .action-buttons {
@@ -208,27 +210,17 @@
 
     .btn-accent {
       background: var(--accent);
-      color: var(--text);
+      color: white;
     }
 
     .btn-accent:hover {
       background: var(--accent-dark);
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+      box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
     }
 
-    .btn-warning {
-      background: var(--warning);
-      color: var(--text);
-    }
-
-    .btn-warning:hover {
-      background: #e0a800;
-      transform: translateY(-2px);
-    }
-
-    /* Shares Section */
-    .shares-section {
+    /* Example Share Section */
+    .example-share {
       padding: 20px 0;
     }
 
@@ -254,32 +246,6 @@
       border-radius: 20px;
       font-size: 14px;
       font-weight: 600;
-    }
-
-    .shares-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .no-shares {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 40px 20px;
-      background: var(--card-bg);
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-    }
-
-    .no-shares i {
-      font-size: 48px;
-      color: var(--text-light);
-      margin-bottom: 15px;
-    }
-
-    .no-shares p {
-      color: var(--text-light);
-      margin-bottom: 20px;
     }
 
     .share-card {
@@ -419,11 +385,6 @@
     .status-active {
       background: rgba(40, 167, 69, 0.1);
       color: var(--success);
-    }
-
-    .status-completed {
-      background: rgba(220, 53, 69, 0.1);
-      color: var(--danger);
     }
 
     /* How it Works */
@@ -574,6 +535,43 @@
       border-top: 1px solid var(--border);
     }
 
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 2000;
+      transform: translateX(120%);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification i {
+      font-size: 20px;
+    }
+
+    .notification.success {
+      border-left: 4px solid var(--success);
+    }
+
+    .notification.info {
+      border-left: 4px solid var(--accent);
+    }
+
+    .notification.error {
+      border-left: 4px solid var(--danger);
+    }
+
     /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
@@ -619,10 +617,6 @@
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       }
       
-      .share-card {
-        max-width: 100%;
-      }
-      
       .action-buttons {
         grid-template-columns: 1fr 1fr;
       }
@@ -631,7 +625,9 @@
 </head>
 
 
+
 <body>
+
   <!-- Header -->
   <header class="header">
     <div class="container">
@@ -641,11 +637,15 @@
           <h1>SonicEarn</h1>
         </div>
         <div class="user-actions">
-          
+          <button><i class="fas fa-bell"></i></button>
+          <button><i class="fas fa-cog"></i></button>
         </div>
       </div>
     </div>
   </header>
+
+  <!-- Notification Area -->
+  <div id="notificationArea"></div>
 
   <div class="container">
     <!-- Account Summary -->
@@ -653,19 +653,19 @@
       <div class="summary-grid">
         <div class="summary-card">
           <h3><i class="fas fa-wallet"></i> Account Balance</h3>
-          <div class="value balance" id="accountBalance">0 UGX</div>
+          <div class="value balance" id="accountBalance">UGX 0</div>
         </div>
         <div class="summary-card">
           <h3><i class="fas fa-money-bill-wave"></i> Total Withdrawn</h3>
-          <div class="value withdrawn" id="totalWithdrawn">0 UGX</div>
+          <div class="value withdrawn" id="totalWithdrawn">UGX 0</div>
         </div>
         <div class="summary-card">
           <h3><i class="fas fa-chart-line"></i> Total Earnings</h3>
-          <div class="value earnings" id="totalEarnings">0 UGX</div>
+          <div class="value earnings" id="totalEarnings">UGX 0</div>
         </div>
         <div class="summary-card">
-          <h3><i class="fas fa-piggy-bank"></i> Total Deposits</h3>
-          <div class="value deposits" id="totalDeposits">0 UGX</div>
+          <h3><i class="fas fa-piggy-bank"></i> Uninvested Deposit</h3>
+          <div class="value deposits" id="uninvestedDeposit">UGX 0</div>
         </div>
       </div>
       
@@ -673,10 +673,10 @@
         <button class="btn btn-primary" onclick="window.location.href='withdraw.html'">
           <i class="fas fa-money-bill-wave"></i> Withdraw
         </button>
-        <button class="btn btn-warning" onclick="window.location.href='deposit.html'">
+        <button class="btn btn-accent" onclick="window.location.href='deposit.html'">
           <i class="fas fa-plus-circle"></i> Deposit
         </button>
-        <button class="btn btn-accent" onclick="openInvestModal()">
+        <button class="btn btn-primary" onclick="openInvestModal()">
           <i class="fas fa-chart-line"></i> Invest
         </button>
         <button class="btn btn-secondary" onclick="openReinvestModal()">
@@ -685,15 +685,55 @@
       </div>
     </section>
     
-    <!-- Shares Section -->
-    <section class="shares-section">
+    <!-- Example Share Card -->
+    <section class="example-share">
       <div class="section-header">
-        <h2><i class="fas fa-chart-pie"></i> Your Investment Shares</h2>
+        <h2><i class="fas fa-chart-pie"></i> Investment Share Example</h2>
         <div class="info">Each share: 10,000 UGX</div>
       </div>
       
-      <div class="shares-grid" id="sharesContainer">
-        <!-- Shares will be loaded here from Firebase -->
+      <div class="share-card">
+        <div class="share-header">
+          <h3>Standard Share</h3>
+          <div class="share-price">50,000 UGX</div>
+          <div class="share-badge status-active">Active</div>
+        </div>
+        <div class="share-body">
+          <div class="share-details">
+            <div class="detail-item">
+              <div class="label">Shares</div>
+              <div class="value">5</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Daily Earnings</div>
+              <div class="value">10,000 UGX</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Days Completed</div>
+              <div class="value">15</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Total Earnings</div>
+              <div class="value">150,000 UGX</div>
+            </div>
+          </div>
+          <div class="purchase-date">
+            <div class="label">Purchased On</div>
+            <div>June 15, 2025</div>
+          </div>
+        </div>
+        <div class="share-footer">
+          <div class="days-remaining">
+            <i class="fas fa-calendar-alt"></i>
+            <div>35 days remaining</div>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress" style="width: 30%"></div>
+            </div>
+            <div class="progress-text">15/50 days</div>
+          </div>
+        </div>
       </div>
     </section>
     
@@ -743,7 +783,7 @@
       <div class="modal-body">
         <div class="form-group">
           <label>Available Uninvested Deposit</label>
-          <div class="form-control" id="availableDeposit">0 UGX</div>
+          <div class="form-control" id="availableDeposit">UGX 0</div>
         </div>
         
         <div class="info-box">
@@ -752,7 +792,7 @@
         
         <div class="form-group">
           <label>Number of Shares to Purchase</label>
-          <input type="number" class="form-control" id="sharesToBuy" min="1" value="1">
+          <input type="number" class="form-control" id="sharesToBuy" min="1" value="0" readonly>
         </div>
         
         <div class="form-group">
@@ -782,31 +822,21 @@
       <div class="modal-body">
         <div class="form-group">
           <label>Available Account Balance</label>
-          <div class="form-control" id="availableBalance">0 UGX</div>
+          <div class="form-control" id="availableBalance">Loading...</div>
+        </div>
+        
+        <div class="form-group">
+          <label>Amount to Transfer</label>
+          <input type="number" class="form-control" id="transferAmount" min="10000" value="0">
         </div>
         
         <div class="info-box">
-          Each share costs 10,000 UGX. You can purchase whole shares only (no fractional shares).
-        </div>
-        
-        <div class="form-group">
-          <label>Number of Shares to Purchase</label>
-          <input type="number" class="form-control" id="sharesToBuyReinvest" min="1" value="1">
-        </div>
-        
-        <div class="form-group">
-          <label>Total Investment Amount</label>
-          <div class="form-control" id="investmentAmountReinvest">0 UGX</div>
-        </div>
-        
-        <div class="form-group">
-          <label>Estimated Daily Earnings</label>
-          <div class="form-control" id="dailyEarningsReinvest">0 UGX</div>
+          Minimum transfer amount: 10,000 UGX. Transfer funds to uninvested deposit to purchase shares.
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeModal('reinvestModal')">Cancel</button>
-        <button class="btn btn-primary" onclick="purchaseShares('balance')">Confirm Purchase</button>
+        <button class="btn btn-primary" onclick="transferToUninvested()">Confirm Transfer</button>
       </div>
     </div>
   </div>
@@ -831,351 +861,285 @@
     </a>
   </nav>
   
-    <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { 
-      getFirestore, 
-      doc, 
-      getDoc, 
-      setDoc, 
-      updateDoc, 
-      collection, 
-      addDoc, 
-      query, 
-      where, 
-      onSnapshot, 
-      serverTimestamp 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { 
-      getAuth, 
-      onAuthStateChanged, 
-      signOut 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+    <!-- Firebase Configuration -->
+  <script>
     // Firebase configuration
-  const firebaseConfig = {
-  apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
-  authDomain: "sonicearn-a13b3.firebaseapp.com",
-  projectId: "sonicearn-a13b3",
-  storageBucket: "sonicearn-a13b3.firebasestorage.app",
-  messagingSenderId: "538538743721",
-  appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
-  measurementId: "G-XGD292PMYM"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
+      authDomain: "sonicearn-a13b3.firebaseapp.com",
+      projectId: "sonicearn-a13b3",
+      storageBucket: "sonicearn-a13b3.firebasestorage.app",
+      messagingSenderId: "538538743721",
+      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
+      measurementId: "G-XGD292PMYM"
+    };
 
     // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
 
-    // Global user data
+  
+  <script>
+    // Firebase references
     let currentUser = null;
+    let userDocRef = null;
     let userData = null;
+    
+    // Format currency function
+    function formatCurrency(amount) {
+      return amount.toLocaleString('en-US') + ' UGX';
+    }
+    
+    // Parse currency string to number
+    function parseCurrency(currencyString) {
+      return parseInt(currencyString.replace(/[^0-9]/g, ''));
+    }
 
-    // Check authentication state
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        // Redirect to login if not authenticated
-        window.location.href = "login.html";
+ // Show notification function
+    function showNotification(message, type = 'success') {
+      const notificationArea = document.getElementById('notificationArea');
+      const icon = type === 'success' ? 'fas fa-check-circle' : 
+                   type === 'info' ? 'fas fa-info-circle' : 
+                   'fas fa-exclamation-circle';
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <i class="${icon}"></i>
+        <div>${message}</div>
+      `;
+      notificationArea.appendChild(notification);
+      
+      // Show notification
+      setTimeout(() => {
+        notification.classList.add('show');
+      }, 10);
+      
+      // Hide after 5 seconds
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+          notificationArea.removeChild(notification);
+        }, 300);
+      }, 5000);
+    }
+    
+    // Open invest modal
+    function openInvestModal() {
+      if (!userData) {
+        showNotification('User data not loaded yet', 'error');
         return;
       }
       
-      currentUser = user;
-      await loadUserData();
-      await loadUserShares();
-    });
-
-    // Load user data from Firestore
-    async function loadUserData() {
-      const userRef = doc(db, "users", currentUser.uid);
-      const userSnap = await getDoc(userRef);
+      const uninvested = userData.uninvestedDeposit || 0;
       
-      if (userSnap.exists()) {
-        userData = userSnap.data();
-        
-        // Update UI with user data
-        document.getElementById("accountBalance").innerText = `${formatCurrency(userData.accountBalance)} UGX`;
-        document.getElementById("totalWithdrawn").innerText = `${formatCurrency(userData.totalWithdrawn)} UGX`;
-        document.getElementById("totalEarnings").innerText = `${formatCurrency(userData.totalEarnings)} UGX`;
-        document.getElementById("totalDeposits").innerText = `${formatCurrency(userData.totalDeposits)} UGX`;
-      } else {
-        console.log("User document not found");
+      if (uninvested < 10000) {
+        showNotification('Minimum 10,000 UGX required to invest', 'info');
+        return;
       }
-    }
-
- // Load user shares from Firestore
-    async function loadUserShares() {
-      const sharesRef = collection(db, "shares");
-      const q = query(sharesRef, where("userId", "==", currentUser.uid));
       
-      onSnapshot(q, (snapshot) => {
-        const container = document.getElementById("sharesContainer");
-        container.innerHTML = "";
-        
-        if (snapshot.empty) {
-          container.innerHTML = `
-            <div class="no-shares">
-              <i class="fas fa-chart-pie"></i>
-              <h3>No Investment Shares Yet</h3>
-              <p>You haven't purchased any shares yet. Start investing to earn daily returns!</p>
-              <button class="btn btn-primary" onclick="openInvestModal()">
-                <i class="fas fa-chart-line"></i> Invest Now
-              </button>
-            </div>
-          `;
-          return;
-        }
-        
-        snapshot.forEach((doc) => {
-          const share = doc.data();
-          const daysCompleted = share.daysCompleted || 0;
-          const daysRemaining = 50 - daysCompleted;
-          const progress = (daysCompleted / 50) * 100;
-          const totalEarning = share.dailyEarning * daysCompleted;
-          const status = daysCompleted < 50 ? "Active" : "Completed";
-          
-          const shareCard = `
-            <div class="share-card">
-              <div class="share-header">
-                <h3>${share.shareType || "Standard Share"}</h3>
-                <div class="share-price">${formatCurrency(share.investmentAmount)} UGX</div>
-                <div class="share-badge status-${status === "Active" ? "active" : "completed"}">${status}</div>
-              </div>
-              <div class="share-body">
-                <div class="share-details">
-                  <div class="detail-item">
-                    <div class="label">Shares</div>
-                    <div class="value">${share.numberOfShares}</div>
-                  </div>
-                  <div class="detail-item">
-                    <div class="label">Daily Earnings</div>
-                    <div class="value">${formatCurrency(share.dailyEarning)} UGX</div>
-                  </div>
-                  <div class="detail-item">
-                    <div class="label">Days Completed</div>
-                    <div class="value">${daysCompleted}</div>
-                  </div>
-                  <div class="detail-item">
-                    <div class="label">Total Earnings</div>
-                    <div class="value">${formatCurrency(totalEarning)} UGX</div>
-                  </div>
-                </div>
-                <div class="purchase-date">
-                  <div class="label">Purchased On</div>
-                  <div>${formatDate(share.purchaseDate)}</div>
-                </div>
-              </div>
-              <div class="share-footer">
-                <div class="days-remaining">
-                  <i class="fas fa-calendar-alt"></i>
-                  <div>${daysRemaining} days remaining</div>
-                </div>
-                <div class="progress-container">
-                  <div class="progress-bar">
-                    <div class="progress" style="width: ${progress}%"></div>
-                  </div>
-                  <div class="progress-text">${daysCompleted}/50 days</div>
-                </div>
-              </div>
-            </div>
-          `;
-          
-          container.innerHTML += shareCard;
-        });
-      });
-    }
-
-    // Open invest modal
-    window.openInvestModal = function() {
-      if (!userData) return;
+      const maxShares = Math.floor(uninvested / 10000);
+      document.getElementById('availableDeposit').innerText = formatCurrency(uninvested);
+      document.getElementById('sharesToBuy').value = maxShares;
+      document.getElementById('sharesToBuy').min = 1;
+      document.getElementById('sharesToBuy').max = maxShares;
       
-      const uninvestedDeposit = userData.uninvestedDeposit || 0;
-      const maxShares = Math.floor(uninvestedDeposit / 10000);
-      
-      document.getElementById("availableDeposit").innerText = `${formatCurrency(uninvestedDeposit)} UGX`;
-      document.getElementById("sharesToBuy").value = maxShares > 0 ? 1 : 0;
-      document.getElementById("sharesToBuy").max = maxShares;
+      // Update calculations
       updateInvestCalculation();
       
-      document.getElementById("investModal").style.display = "flex";
+      document.getElementById('investModal').style.display = 'flex';
     }
-
+    
     // Open reinvest modal
-    window.openReinvestModal = function() {
-      if (!userData) return;
-      
-      const accountBalance = userData.accountBalance || 0;
-      const maxShares = Math.floor(accountBalance / 10000);
-      
-      document.getElementById("availableBalance").innerText = `${formatCurrency(accountBalance)} UGX`;
-      document.getElementById("sharesToBuyReinvest").value = maxShares > 0 ? 1 : 0;
-      document.getElementById("sharesToBuyReinvest").max = maxShares;
-      updateReinvestCalculation();
-      
-      document.getElementById("reinvestModal").style.display = "flex";
-    }
-
-    // Close modal
-    window.closeModal = function(modalId) {
-      document.getElementById(modalId).style.display = "none";
-    }
-
-    // Update invest calculation
-    function updateInvestCalculation() {
-      const shares = parseInt(document.getElementById("sharesToBuy").value) || 0;
-      const investmentAmount = shares * 10000;
-      const dailyEarning = investmentAmount * 0.2;
-      
-      document.getElementById("investmentAmount").innerText = `${formatCurrency(investmentAmount)} UGX`;
-      document.getElementById("dailyEarnings").innerText = `${formatCurrency(dailyEarning)} UGX`;
-    }
-
-    // Update reinvest calculation
-    function updateReinvestCalculation() {
-      const shares = parseInt(document.getElementById("sharesToBuyReinvest").value) || 0;
-      const investmentAmount = shares * 10000;
-      const dailyEarning = investmentAmount * 0.2;
-      
-      document.getElementById("investmentAmountReinvest").innerText = `${formatCurrency(investmentAmount)} UGX`;
-      document.getElementById("dailyEarningsReinvest").innerText = `${formatCurrency(dailyEarning)} UGX`;
-    }
-
-    // Purchase shares (either from deposit or balance)
-    async function purchaseShares(source) {
-      let sharesInput, modalId;
-      
-      if (source === 'deposit') {
-        sharesInput = document.getElementById("sharesToBuy");
-        modalId = "investModal";
-      } else {
-        sharesInput = document.getElementById("sharesToBuyReinvest");
-        modalId = "reinvestModal";
-      }
-      
-      const shares = parseInt(sharesInput.value) || 0;
-      
-      if (shares < 1) {
-        alert("Please enter a valid number of shares (minimum 1)");
+    function openReinvestModal() {
+      if (!userData) {
+        showNotification('User data not loaded yet', 'error');
         return;
       }
       
+      const balance = userData.accountBalance || 0;
+      
+      if (balance < 10000) {
+        showNotification('Minimum 10,000 UGX required to reinvest', 'info');
+        return;
+      }
+      
+      document.getElementById('availableBalance').innerText = formatCurrency(balance);
+      document.getElementById('transferAmount').value = balance;
+      document.getElementById('transferAmount').min = 10000;
+      document.getElementById('transferAmount').max = balance;
+      
+      document.getElementById('reinvestModal').style.display = 'flex';
+    }
+    
+    // Close modal
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+    
+    // Update invest calculation
+    function updateInvestCalculation() {
+      const shares = parseInt(document.getElementById('sharesToBuy').value) || 0;
       const investmentAmount = shares * 10000;
       const dailyEarning = investmentAmount * 0.2;
       
+      document.getElementById('investmentAmount').innerText = formatCurrency(investmentAmount);
+      document.getElementById('dailyEarnings').innerText = formatCurrency(dailyEarning);
+    }
+    
+    // Transfer funds to uninvested deposit
+    function transferToUninvested() {
+      const transferAmount = parseInt(document.getElementById('transferAmount').value) || 0;
+      
+      if (transferAmount < 10000) {
+        showNotification('Minimum transfer amount is 10,000 UGX', 'error');
+        return;
+      }
+      
+      if (transferAmount > userData.accountBalance) {
+        showNotification('Transfer amount exceeds account balance', 'error');
+        return;
+      }
+      
+      // Calculate new values
+      const newAccountBalance = userData.accountBalance - transferAmount;
+      const newUninvestedDeposit = (userData.uninvestedDeposit || 0) + transferAmount;
+      
+      // Update Firestore
+      userDocRef.update({
+        accountBalance: newAccountBalance,
+        uninvestedDeposit: newUninvestedDeposit
+      })
+      .then(() => {
+        // Update local data
+        userData.accountBalance = newAccountBalance;
+        userData.uninvestedDeposit = newUninvestedDeposit;
+        
+        // Update UI
+        document.getElementById('accountBalance').innerText = formatCurrency(newAccountBalance);
+        document.getElementById('uninvestedDeposit').innerText = formatCurrency(newUninvestedDeposit);
+        
+        // Show success message
+        showNotification(`Successfully transferred ${formatCurrency(transferAmount)} to uninvested deposit!`);
+        
+        // Close modal
+        closeModal('reinvestModal');
+      })
+      .catch(error => {
+        console.error('Error updating document: ', error);
+        showNotification('Failed to transfer funds. Please try again.', 'error');
+      });
+    }
+    
+    // Purchase shares
+    function purchaseShares(source) {
+      const shares = parseInt(document.getElementById('sharesToBuy').value) || 0;
+      const investmentAmount = shares * 10000;
+      
+      if (shares < 1) {
+        showNotification('You must purchase at least 1 share', 'error');
+        return;
+      }
+      
       // Check if user has enough funds
-      if (source === 'deposit') {
-        if (userData.uninvestedDeposit < investmentAmount) {
-          alert("Insufficient uninvested deposit");
-          return;
-        }
-      } else {
-        if (userData.accountBalance < investmentAmount) {
-          alert("Insufficient account balance");
-          return;
-        }
+      if (userData.uninvestedDeposit < investmentAmount) {
+        showNotification('Insufficient uninvested deposit', 'info');
+        return;
       }
       
-      try {
-        // Create new share document
-        const shareData = {
-          userId: currentUser.uid,
-          numberOfShares: shares,
-          investmentAmount: investmentAmount,
-          dailyEarning: dailyEarning,
-          purchaseDate: serverTimestamp(),
-          daysCompleted: 0,
-          shareType: "Standard Share"
-        };
-        
-        await addDoc(collection(db, "shares"), shareData);
-        
-        // Update user document
-        const userRef = doc(db, "users", currentUser.uid);
-        const updates = {
-          totalDeposits: userData.totalDeposits + (source === 'deposit' ? 0 : investmentAmount),
-          uninvestedDeposit: userData.uninvestedDeposit - (source === 'deposit' ? investmentAmount : 0),
-          accountBalance: userData.accountBalance - (source === 'balance' ? investmentAmount : 0)
-        };
-        
-        await updateDoc(userRef, updates);
-        
-        alert(`Successfully purchased ${shares} share(s)!`);
-        closeModal(modalId);
-        
-        // Reload user data
-        await loadUserData();
-      } catch (error) {
-        console.error("Error purchasing shares:", error);
-        alert("Failed to purchase shares: " + error.message);
-      }
-    }
-
-    // Format currency
-    function formatCurrency(amount) {
-      return amount?.toLocaleString('en-US') || "0";
-    }
-
-    // Format date
-    function formatDate(timestamp) {
-      if (!timestamp) return "N/A";
+      // Calculate new uninvested deposit
+      const newUninvestedDeposit = userData.uninvestedDeposit - investmentAmount;
       
-      const date = timestamp.toDate();
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
+      // Calculate dates
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + 50);
+      
+      // Create share document
+      const shareData = {
+        userId: currentUser.uid,
+        amount: investmentAmount,
+        shares: shares,
+        dailyEarning: investmentAmount * 0.2,
+        totalEarnings: 0,
+        daysCompleted: 0,
+        startDate: firebase.firestore.Timestamp.fromDate(startDate),
+        endDate: firebase.firestore.Timestamp.fromDate(endDate),
+        status: "active",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      
+      // Create a batch to update multiple documents
+      const batch = db.batch();
+      
+      // Update user document
+      batch.update(userDocRef, {
+        uninvestedDeposit: newUninvestedDeposit
+      });
+      
+      // Add new share document
+      const sharesRef = db.collection('shares').doc();
+      batch.set(sharesRef, shareData);
+      
+      // Commit the batch
+      batch.commit()
+      .then(() => {
+        // Update local user data
+        userData.uninvestedDeposit = newUninvestedDeposit;
+        
+        // Update UI
+        document.getElementById('uninvestedDeposit').innerText = formatCurrency(newUninvestedDeposit);
+        
+        // Show success message
+        showNotification(`Successfully purchased ${shares} share(s)! Check your shares page for details.`);
+        
+        // Close modal
+        closeModal('investModal');
+      })
+      .catch(error => {
+        console.error('Error completing transaction: ', error);
+        showNotification('Failed to purchase shares. Please try again.', 'error');
       });
     }
-
-    // Attach event listeners
-    document.getElementById("sharesToBuy").addEventListener("input", updateInvestCalculation);
-    document.getElementById("sharesToBuyReinvest").addEventListener("input", updateReinvestCalculation);
-  </script>
-  
-<script type="module">
-  import { 
-    getAuth, 
-    setPersistence,
-    browserLocalPersistence,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  
-  // Firebase configuration
-  const firebaseConfig = {
-  apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
-  authDomain: "sonicearn-a13b3.firebaseapp.com",
-  projectId: "sonicearn-a13b3",
-  storageBucket: "sonicearn-a13b3.firebasestorage.app",
-  messagingSenderId: "538538743721",
-  appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
-  measurementId: "G-XGD292PMYM"
-};
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  // Set persistence to LOCAL (remember login across sessions)
-  setPersistence(auth, browserLocalPersistence)
-    .then(() => {
-      // Now set up the auth state listener
-      onAuthStateChanged(auth, (user) => {
-        if (!user) {
-          // User is not logged in, redirect to login page
-          console.log("User not authenticated, redirecting to login");
-          window.location.href = "login.html";
+    
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auth state observer
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          currentUser = user;
+          userDocRef = db.collection('users').doc(user.uid);
+          
+          // Get user data
+          userDocRef.get().then(doc => {
+            if (doc.exists) {
+              userData = doc.data();
+              
+              // Set initial values
+              document.getElementById('accountBalance').innerText = formatCurrency(userData.accountBalance || 0);
+              document.getElementById('totalWithdrawn').innerText = formatCurrency(userData.totalWithdrawn || 0);
+              document.getElementById('totalEarnings').innerText = formatCurrency(userData.totalEarnings || 0);
+              document.getElementById('uninvestedDeposit').innerText = formatCurrency(userData.uninvestedDeposit || 0);
+            } else {
+              console.log('No such document!');
+            }
+          }).catch(error => {
+            console.log('Error getting document:', error);
+          });
         } else {
-          console.log("User authenticated:", user.email);
-          // User is logged in, you can proceed with app functionality
-          // This is where you would load the rest of your app functionality
+          // User is signed out, redirect to login
+          window.location.href = 'login.html';
         }
       });
-    })
-    .catch((error) => {
-      console.error("Error setting persistence:", error);
+      
+      // Add event listeners for input changes
+      document.getElementById('sharesToBuy').addEventListener('input', updateInvestCalculation);
     });
-</script>
+  </script>
 </body>
 </html>
