@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Shares - SonicEarn</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #007B55;
+    }
+    .share-card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin: 15px auto;
+      max-width: 600px;
+    }
+    .share-card h2 {
+      color: #333;
+    }
+    .share-card p {
+      margin: 5px 0;
+      color: #555;
+    }
+    .highlight {
+      color: #007B55;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>My Shares</h1>
+  <div id="sharesContainer">Loading your shares...</div>  <!-- Firebase SDK -->  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
+      authDomain: "sonicearn-a13b3.firebaseapp.com",
+      projectId: "sonicearn-a13b3",
+      storageBucket: "sonicearn-a13b3.appspot.com",
+      messagingSenderId: "538538743721",
+      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
+      measurementId: "G-XGD292PMYM"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        document.getElementById('sharesContainer').innerText = 'Please log in to view your shares.';
+        return;
+      }
+
+      const sharesContainer = document.getElementById('sharesContainer');
+      db.collection('shares')
+        .where('userId', '==', user.uid)
+        .get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            sharesContainer.innerText = 'You have no shares yet.';
+            return;
+          }
+
+          sharesContainer.innerHTML = '';
+          const docs = snapshot.docs;
+          for (let doc of docs) {
+            const share = doc.data();
+            const card = document.createElement('div');
+            card.className = 'share-card';
+            card.innerHTML = `
+              <p><span class="highlight">Shares:</span> ${share.shares}</p>
+              <p><span class="highlight">Amount:</span> ${share.amount.toLocaleString()} UGX</p>
+              <p><span class="highlight">Daily Earning:</span> ${share.dailyEarning.toLocaleString()} UGX</p>
+              <p><span class="highlight">Total Earnings:</span> ${share.totalEarnings.toLocaleString()} UGX</p>
+              <p><span class="highlight">Days Completed:</span> ${share.daysCompleted}</p>
+              <p><span class="highlight">Status:</span> ${share.status}</p>
+              <p><span class="highlight">Start Date:</span> ${share.startDate.toDate().toLocaleDateString()}</p>
+              <p><span class="highlight">End Date:</span> ${share.endDate.toDate().toLocaleDateString()}</p>
+            `;
+            sharesContainer.appendChild(card);
+          }
+        })
+        .catch(error => {
+          sharesContainer.innerText = 'Error fetching shares: ' + error.message;
+        });
+    });
+  </script></body>
+</html>
