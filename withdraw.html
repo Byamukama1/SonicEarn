@@ -94,7 +94,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
     getFirestore, collection, addDoc, serverTimestamp, getDocs,
-    query, orderBy, doc, getDoc
+    query, orderBy, doc, getDoc, updateDoc
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -133,7 +133,7 @@
 
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
-      if (data.status === "Paid") {
+      if (data.status === "Paid" && data.userId === currentUser.uid) {
         const item = document.createElement("div");
         item.classList.add("history-item");
         item.innerHTML = `<strong>Phone:</strong> ${data.phoneNumber}<br>
@@ -167,6 +167,7 @@
     if (!confirmed) return;
 
     try {
+      // Step 1: Submit withdraw request
       await addDoc(collection(db, "withdraws"), {
         holderName,
         phoneNumber,
@@ -176,7 +177,16 @@
         createdAt: serverTimestamp()
       });
 
-      alert("Withdraw request submitted successfully. Admin will process your payment after applying necessary charges.");
+      // Step 2: Deduct amount from user's accountBalance
+      const userRef = doc(db, "users", currentUser.uid);
+      const newBalance = currentBalance - amount;
+      await updateDoc(userRef, { accountBalance: newBalance });
+
+      // Step 3: Update local balance and reset form
+      currentBalance = newBalance;
+      document.getElementById("currentBalance").textContent = currentBalance.toLocaleString();
+      alert("Withdraw request submitted. Amount has been deducted from your balance.");
+
       document.getElementById("holderName").value = "";
       document.getElementById("phoneNumber").value = "";
       document.getElementById("amount").value = "";
