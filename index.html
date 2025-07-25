@@ -198,6 +198,17 @@
       box-shadow: 0 4px 8px rgba(0, 123, 85, 0.3);
     }
 
+    .btn-accent {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-accent:hover {
+      background: var(--accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
+    }
+
     .btn-secondary {
       background: #e9ecef;
       color: var(--text);
@@ -208,15 +219,15 @@
       transform: translateY(-2px);
     }
 
-    .btn-accent {
-      background: var(--accent);
-      color: white;
+    .btn-disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: #e9ecef !important;
     }
 
-    .btn-accent:hover {
-      background: var(--accent-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
+    .btn-disabled:hover {
+      transform: none !important;
+      box-shadow: none !important;
     }
 
     /* Example Share Section */
@@ -624,8 +635,6 @@
   </style>
 </head>
 
-
-
 <body>
 
   <!-- Header -->
@@ -670,7 +679,7 @@
       </div>
       
       <div class="action-buttons">
-        <button class="btn btn-primary" onclick="window.location.href='withdraw.html'">
+        <button id="withdrawBtn" class="btn btn-primary">
           <i class="fas fa-money-bill-wave"></i> Withdraw
         </button>
         <button class="btn btn-accent" onclick="window.location.href='deposit.html'">
@@ -689,13 +698,13 @@
     <section class="example-share">
       <div class="section-header">
         <h2><i class="fas fa-chart-pie"></i> Investment Share Example</h2>
-        <div class="info">Each share: 10,000 UGX</div>
+        <div class="info">Each share: 30,000 UGX</div>
       </div>
       
       <div class="share-card">
         <div class="share-header">
           <h3>Standard Share</h3>
-          <div class="share-price">50,000 UGX</div>
+          <div class="share-price">150,000 UGX</div>
           <div class="share-badge status-active">Active</div>
         </div>
         <div class="share-body">
@@ -706,7 +715,7 @@
             </div>
             <div class="detail-item">
               <div class="label">Daily Earnings</div>
-              <div class="value">10,000 UGX</div>
+              <div class="value">30,000 UGX</div>
             </div>
             <div class="detail-item">
               <div class="label">Days Completed</div>
@@ -714,7 +723,7 @@
             </div>
             <div class="detail-item">
               <div class="label">Total Earnings</div>
-              <div class="value">150,000 UGX</div>
+              <div class="value">450,000 UGX</div>
             </div>
           </div>
           <div class="purchase-date">
@@ -746,7 +755,7 @@
             <i class="fas fa-money-bill-wave"></i>
           </div>
           <h3>Invest in Shares</h3>
-          <p>Purchase shares at 10,000 UGX each. Each share earns 20% daily return for 50 days.</p>
+          <p>Purchase shares at 30,000 UGX each. Each share earns 20% daily return for 50 days.</p>
         </div>
         <div class="step">
           <div class="step-icon">
@@ -760,7 +769,7 @@
             <i class="fas fa-hand-holding-usd"></i>
           </div>
           <h3>Earn Daily Returns</h3>
-          <p>Receive 20% of your investment daily for 50 days. For example, 10,000 UGX invested earns 2,000 UGX daily.</p>
+          <p>Receive 20% of your investment daily for 50 days. For example, 30,000 UGX invested earns 6,000 UGX daily.</p>
         </div>
         <div class="step">
           <div class="step-icon">
@@ -787,7 +796,7 @@
         </div>
         
         <div class="info-box">
-          Each share costs 10,000 UGX. You can purchase whole shares only (no fractional shares).
+          Each share costs 30,000 UGX. You can purchase whole shares only (no fractional shares).
         </div>
         
         <div class="form-group">
@@ -860,7 +869,7 @@
       <span>Account</span>
     </a>
   </nav>
-  
+
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -900,8 +909,8 @@
     function parseCurrency(currencyString) {
       return parseInt(currencyString.replace(/[^0-9]/g, ''));
     }
-
- // Show notification function
+    
+    // Show notification function
     function showNotification(message, type = 'success') {
       const notificationArea = document.getElementById('notificationArea');
       const icon = type === 'success' ? 'fas fa-check-circle' : 
@@ -938,12 +947,12 @@
       
       const uninvested = userData.uninvestedDeposit || 0;
       
-      if (uninvested < 10000) {
-        showNotification('Minimum 10,000 UGX required to invest', 'info');
+      if (uninvested < 30000) {
+        showNotification('Minimum 30,000 UGX required to invest', 'info');
         return;
       }
       
-      const maxShares = Math.floor(uninvested / 10000);
+      const maxShares = Math.floor(uninvested / 30000);
       document.getElementById('availableDeposit').innerText = formatCurrency(uninvested);
       document.getElementById('sharesToBuy').value = maxShares;
       document.getElementById('sharesToBuy').min = 1;
@@ -985,7 +994,7 @@
     // Update invest calculation
     function updateInvestCalculation() {
       const shares = parseInt(document.getElementById('sharesToBuy').value) || 0;
-      const investmentAmount = shares * 10000;
+      const investmentAmount = shares * 30000;
       const dailyEarning = investmentAmount * 0.2;
       
       document.getElementById('investmentAmount').innerText = formatCurrency(investmentAmount);
@@ -1039,7 +1048,7 @@
     // Purchase shares
     function purchaseShares(source) {
       const shares = parseInt(document.getElementById('sharesToBuy').value) || 0;
-      const investmentAmount = shares * 10000;
+      const investmentAmount = shares * 30000;
       
       if (shares < 1) {
         showNotification('You must purchase at least 1 share', 'error');
@@ -1107,6 +1116,27 @@
       });
     }
     
+    // Handle withdrawal button click
+    function handleWithdraw() {
+      if (userData && userData.totalDeposits >= 30000) {
+        window.location.href = 'withdraw.html';
+      } else {
+        showNotification('Minimum total deposits of 30,000 UGX required to withdraw', 'info');
+      }
+    }
+    
+    // Update withdraw button state
+    function updateWithdrawButton() {
+      const withdrawBtn = document.getElementById('withdrawBtn');
+      if (userData && userData.totalDeposits >= 30000) {
+        withdrawBtn.classList.remove('btn-disabled');
+        withdrawBtn.onclick = () => window.location.href = 'withdraw.html';
+      } else {
+        withdrawBtn.classList.add('btn-disabled');
+        withdrawBtn.onclick = handleWithdraw;
+      }
+    }
+    
     // Initialize the page
     document.addEventListener('DOMContentLoaded', function() {
       // Auth state observer
@@ -1125,6 +1155,9 @@
               document.getElementById('totalWithdrawn').innerText = formatCurrency(userData.totalWithdrawn || 0);
               document.getElementById('totalEarnings').innerText = formatCurrency(userData.totalEarnings || 0);
               document.getElementById('uninvestedDeposit').innerText = formatCurrency(userData.uninvestedDeposit || 0);
+              
+              // Update withdraw button state
+              updateWithdrawButton();
             } else {
               console.log('No such document!');
             }
@@ -1139,6 +1172,9 @@
       
       // Add event listeners for input changes
       document.getElementById('sharesToBuy').addEventListener('input', updateInvestCalculation);
+      
+      // Set up withdraw button handler
+      document.getElementById('withdrawBtn').addEventListener('click', handleWithdraw);
     });
   </script>
 </body>
