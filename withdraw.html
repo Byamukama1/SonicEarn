@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Withdraw - SonicEarn</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #2a8c4a;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .btn {
+      background-color: #2a8c4a;
+      color: white;
+      padding: 12px;
+      width: 100%;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background-color: #eee;
+      color: #444;
+      padding: 10px;
+      width: 100%;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .note {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #a00;
+      background: #fff5f5;
+      padding: 10px;
+      border-radius: 8px;
+      border-left: 4px solid #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2><i class="fas fa-hand-holding-usd"></i> Withdraw</h2><input type="text" id="holderName" placeholder="Holder Name" required />
+<input type="tel" id="phoneNumber" placeholder="Phone Number" required />
+<input type="number" id="amount" placeholder="Withdraw Amount" required />
+
+<button class="btn" id="submitWithdraw">Submit Withdraw</button>
+
+<a href="withdraw-history.html" class="btn-secondary">View Withdraw History</a>
+
+<div class="note">
+  ⚠️Make sure you have enough account balance to withdraw </div>
+
+  </div>  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
+      authDomain: "sonicearn-a13b3.firebaseapp.com",
+      projectId: "sonicearn-a13b3",
+      storageBucket: "sonicearn-a13b3.appspot.com",
+      messagingSenderId: "538538743721",
+      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById("submitWithdraw").addEventListener("click", async () => {
+      const holderName = document.getElementById("holderName").value;
+      const phoneNumber = document.getElementById("phoneNumber").value;
+      const amount = parseFloat(document.getElementById("amount").value);
+
+      if (!holderName || !phoneNumber || !amount) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "withdraws"), {
+          holderName,
+          phoneNumber,
+          amount,
+          status: "Pending",
+          createdAt: serverTimestamp()
+        });
+        alert("Withdraw request submitted successfully.");
+        document.getElementById("holderName").value = "";
+        document.getElementById("phoneNumber").value = "";
+        document.getElementById("amount").value = "";
+      } catch (error) {
+        console.error("Error submitting withdraw:", error);
+        alert("Failed to submit withdraw request.");
+      }
+    });
+  </script></body>
+</html>
