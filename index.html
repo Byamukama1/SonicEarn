@@ -632,8 +632,114 @@
         grid-template-columns: 1fr 1fr;
       }
     }
+
+    /* Table Styles */
+    .table-container {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: var(--shadow);
+    }
+
+    .table-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .table-header h2 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .table-header p {
+      color: var(--text-light);
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      background: var(--primary-light);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .stat-card {
+      padding: 10px;
+    }
+
+    .stat-card h3 {
+      color: var(--primary);
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .stat-card p {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th {
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 12px 10px;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--secondary);
+    }
+
+    tr:hover {
+      background-color: var(--primary-light);
+    }
+
+    .product-cell {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .highlight {
+      background-color: #fff9db;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    @media (max-width: 768px) {
+      .stats {
+        flex-direction: column;
+      }
+      
+      .stat-card {
+        margin-bottom: 10px;
+      }
+      
+      th, td {
+        padding: 8px 5px;
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
+
 
 <body>
 
@@ -645,10 +751,8 @@
           <i class="fas fa-wallet"></i>
           <h1>SonicEarn</h1>
         </div>
-        <div class="user-actions">
-          <button><i class="fas fa-bell"></i></button>
-          <button><i class="fas fa-cog"></i></button>
-        </div>
+        
+        
       </div>
     </div>
   </header>
@@ -701,48 +805,41 @@
         <div class="info">Each share: 30,000 UGX</div>
       </div>
       
-      <div class="share-card">
-        <div class="share-header">
-          <h3>Standard Share</h3>
-          <div class="share-price">150,000 UGX</div>
-          <div class="share-badge status-active">Active</div>
+      <div class="table-container">
+        <div class="table-header">
+          <h2>Investment Shares Program</h2>
+          <p>Each share costs UGX 30,000 with a fixed daily income of 20% and 50-day investment period</p>
         </div>
-        <div class="share-body">
-          <div class="share-details">
-            <div class="detail-item">
-              <div class="label">Shares</div>
-              <div class="value">5</div>
-            </div>
-            <div class="detail-item">
-              <div class="label">Daily Earnings</div>
-              <div class="value">30,000 UGX</div>
-            </div>
-            <div class="detail-item">
-              <div class="label">Days Completed</div>
-              <div class="value">15</div>
-            </div>
-            <div class="detail-item">
-              <div class="label">Total Earnings</div>
-              <div class="value">450,000 UGX</div>
-            </div>
+        
+        <div class="stats">
+          <div class="stat-card">
+            <h3>Share Price</h3>
+            <p>UGX 30,000</p>
           </div>
-          <div class="purchase-date">
-            <div class="label">Purchased On</div>
-            <div>June 15, 2025</div>
+          <div class="stat-card">
+            <h3>Daily Income</h3>
+            <p>20%</p>
+          </div>
+          <div class="stat-card">
+            <h3>Investment Period</h3>
+            <p>50 Days</p>
           </div>
         </div>
-        <div class="share-footer">
-          <div class="days-remaining">
-            <i class="fas fa-calendar-alt"></i>
-            <div>35 days remaining</div>
-          </div>
-          <div class="progress-container">
-            <div class="progress-bar">
-              <div class="progress" style="width: 30%"></div>
-            </div>
-            <div class="progress-text">15/50 days</div>
-          </div>
-        </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price (UGX)</th>
+              <th>Daily Income (UGX)</th>
+              <th>Total Income (UGX)</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows will be generated by JavaScript -->
+          </tbody>
+        </table>
       </div>
     </section>
     
@@ -869,6 +966,7 @@
       <span>Account</span>
     </a>
   </nav>
+  
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -1175,6 +1273,39 @@
       
       // Set up withdraw button handler
       document.getElementById('withdrawBtn').addEventListener('click', handleWithdraw);
+    });
+  </script>
+
+  <!-- Table Generation Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tbody = document.querySelector('tbody');
+      const sharePrice = 30000;
+      const dailyRate = 0.20; // 20%
+      const period = 50; // days
+      
+      for (let shares = 1; shares <= 8; shares++) {
+        const price = shares * sharePrice;
+        const dailyIncome = price * dailyRate;
+        const totalIncome = dailyIncome * period;
+        
+        const row = document.createElement('tr');
+        
+        // Highlight row for 5 shares
+        if (shares === 5) {
+          row.classList.add('highlight');
+        }
+        
+        row.innerHTML = `
+          <td class="product-cell">Share${shares}</td>
+          <td>${price.toLocaleString()}</td>
+          <td>${dailyIncome.toLocaleString()}</td>
+          <td>${totalIncome.toLocaleString()}</td>
+          <td>${period} days</td>
+        `;
+        
+        tbody.appendChild(row);
+      }
     });
   </script>
 </body>
