@@ -162,7 +162,7 @@
     }
 
     const chargeNotice = Math.round(amount * 0.1);
-    const confirmMsg = `Note: A 10% processing fee (UGX ${chargeNotice.toLocaleString()}) will be applied by admin. You will receive UGX ${(amount - chargeNotice).toLocaleString()}.\nDo you want to proceed?`;
+    const confirmMsg = `Note: A 10% processing fee (UGX ${chargeNotice.toLocaleString()}) will be applied by sonic Earn. You will receive UGX ${(amount - chargeNotice).toLocaleString()}.\nDo you want to proceed?`;
     const confirmed = confirm(confirmMsg);
     if (!confirmed) return;
 
