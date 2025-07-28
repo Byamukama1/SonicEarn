@@ -72,6 +72,20 @@
       margin-bottom: 10px;
       padding: 10px;
       border-radius: 5px;
+      position: relative;
+    }
+
+    .cancel-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #c62828;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      cursor: pointer;
     }
 
     .number-box {
@@ -148,8 +162,12 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, collection, addDoc, getDocs, serverTimestamp, query, where, deleteDoc, doc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getAuth, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
@@ -167,6 +185,8 @@
     const submitBtn = document.getElementById("submitBtn");
     const depositList = document.getElementById("depositList");
 
+    let hasPending = false;
+
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "login.html";
@@ -177,8 +197,10 @@
         const q = query(collection(db, "deposits"), where("userId", "==", user.uid));
         const snapshot = await getDocs(q);
         depositList.innerHTML = "";
-        snapshot.forEach(doc => {
-          const data = doc.data();
+        hasPending = false;
+
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data();
           const div = document.createElement("div");
           div.className = "deposit-item";
           div.innerHTML = `
@@ -186,13 +208,32 @@
             Amount: UGX ${data.amount} <br>
             Status: <strong>${data.status || "Pending"}</strong>
           `;
+
+          if (data.status === "Pending") {
+            hasPending = true;
+            const cancelBtn = document.createElement("button");
+            cancelBtn.className = "cancel-btn";
+            cancelBtn.innerText = "Cancel";
+            cancelBtn.onclick = async () => {
+              await deleteDoc(doc(db, "deposits", docSnap.id));
+              alert("⛔ Pending deposit canceled.");
+              await loadHistory();
+            };
+            div.appendChild(cancelBtn);
+          }
+
           depositList.appendChild(div);
         });
       };
 
-      loadHistory();
+      await loadHistory();
 
       submitBtn.onclick = async () => {
+        if (hasPending) {
+          alert("⚠️ You already have a pending deposit.\nPlease complete or cancel it before making another.");
+          return;
+        }
+
         const name = document.getElementById("holderName").value.trim();
         const phone = document.getElementById("phoneNumber").value.trim();
         const amount = parseInt(document.getElementById("amount").value);
@@ -211,20 +252,19 @@
           timestamp: serverTimestamp()
         });
 
-        alert("Deposit submitted successfully.");
+        alert("✅ Deposit submitted successfully.");
         document.getElementById("holderName").value = "";
         document.getElementById("phoneNumber").value = "";
         document.getElementById("amount").value = "";
-        loadHistory();
+        await loadHistory();
       };
     });
 
-    // Copy Function
     window.copyToClipboard = function (text) {
       navigator.clipboard.writeText(text).then(() => {
         alert("Copied: " + text);
       });
-    }
+    };
   </script>
 </body>
 </html>
