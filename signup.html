@@ -3,510 +3,305 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>success pay- Professional Sign Up</title>
+  <title>Success Pay Investments - Sign Up</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* ====== Reset / Base ====== */
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'}
+    body{
+      background: linear-gradient(160deg,#0b1220 0%,#101a2f 60%, #111827 100%);
+      min-height:100vh; display:flex; justify-content:center; align-items:center; padding:20px;
+      color:#0f172a;
     }
 
-    body {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
+    /* ====== Shell ====== */
+    .container{
+      display:flex; max-width:1100px; width:100%; background:#ffffff;
+      border-radius:18px; overflow:hidden;
+      box-shadow: 0 30px 80px rgba(2,6,23,.30);
     }
 
-    .container {
-      display: flex;
-      max-width: 1100px;
-      width: 100%;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
+    /* ====== Left brand panel (minimal, no statements) ====== */
+    .brand{
+      flex:1.05; background:
+        radial-gradient(1200px 400px at -10% -30%, rgba(245,158,11,.25), transparent 60%),
+        radial-gradient(800px 300px at 120% 120%, rgba(245,158,11,.18), transparent 60%),
+        linear-gradient(180deg,#0f172a 0%, #111827 100%);
+      color:#e5e7eb; position:relative; padding:44px 38px; display:flex; flex-direction:column; justify-content:space-between;
+    }
+    .brand .logo{
+      display:flex; align-items:center; gap:14px;
+    }
+    .brand .logo i{
+      width:58px; height:58px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      background: rgba(245,158,11,.12);
+      color:#f59e0b; font-size:26px; border:1px solid rgba(245,158,11,.22);
+      box-shadow: inset 0 0 20px rgba(245,158,11,.12);
+    }
+    .brand .logo h1{
+      color:#f8fafc; font-weight:800; letter-spacing:.2px; font-size:26px;
     }
 
-    .brand-section {
-      flex: 1;
-      background: linear-gradient(135deg, #007B55 0%, #00563a 100%);
-      color: white;
-      padding: 50px 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
+    /* Decorative shapes */
+    .orb{
+      position:absolute; right:-80px; top:-60px; width:260px; height:260px;
+      background: radial-gradient(circle at 30% 30%, rgba(245,158,11,.35), rgba(245,158,11,.08) 60%, transparent 70%);
+      filter: blur(2px); border-radius:50%;
+    }
+    .ring{
+      position:absolute; left:-100px; bottom:-100px; width:340px; height:340px; border-radius:50%;
+      border: 2px dashed rgba(245,158,11,.25);
+      transform: rotate(12deg);
     }
 
-    .brand-section::before {
-      content: "";
-      position: absolute;
-      top: -50px;
-      right: -50px;
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
+    /* ====== Right form panel ====== */
+    .panel{
+      flex:1; padding:46px 40px; position:relative; background:#ffffff;
     }
 
-    .brand-section::after {
-      content: "";
-      position: absolute;
-      bottom: -80px;
-      left: -30px;
-      width: 250px;
-      height: 250px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.07);
+    .header{ margin-bottom:24px; }
+    .header h2{ font-size:28px; color:#0f172a; font-weight:800; letter-spacing:-.2px; }
+    .header p{ font-size:14px; color:#6b7280; margin-top:6px; }
+
+    /* New bonus card (only statement shown), moved under header */
+    .bonus-card{
+      display:flex; align-items:center; gap:12px;
+      background: linear-gradient(180deg,#fff7ed 0%, #fffbeb 100%);
+      border:1px solid #fde68a; border-radius:14px; padding:12px 14px; margin:12px 0 22px;
+      box-shadow: 0 8px 24px rgba(245,158,11,.15);
+    }
+    .bonus-card i{ color:#b45309; background:#fef3c7; border:1px solid #fde68a; width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; }
+    .bonus-card b{ color:#92400e; }
+    .bonus-card span{ color:#7c2d12; font-size:14px; }
+
+    /* Form */
+    .form-group{ margin-bottom:16px; }
+    label{ display:block; margin-bottom:8px; color:#374151; font-weight:600; font-size:13px; }
+    .input-wrap{ position:relative; }
+    .input-wrap i{
+      position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:15px;
+    }
+    .control{
+      width:100%; padding:13px 14px 13px 44px; border:1px solid #e5e7eb; background:#f9fafb;
+      border-radius:10px; font-size:14px; color:#111827; transition:.2s;
+    }
+    .control:focus{
+      outline:none; border-color:#f59e0b; background:#ffffff;
+      box-shadow: 0 0 0 4px rgba(245,158,11,.15);
+    }
+    .hint{ font-size:12px; color:#6b7280; margin-top:6px; }
+
+    .toggle{
+      position:absolute; right:12px; top:50%; transform:translateY(-50%);
+      background:none; border:none; color:#94a3b8; cursor:pointer; font-size:16px;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 30px;
+    .btn{
+      width:100%; padding:13px; border:none; border-radius:12px; font-weight:800; letter-spacing:.2px;
+      background: linear-gradient(180deg,#f59e0b 0%, #d97706 100%); color:#111827; cursor:pointer; margin-top:10px;
+      box-shadow: 0 10px 24px rgba(245,158,11,.35);
+      transition: transform .15s ease, box-shadow .15s ease;
     }
+    .btn:hover{ transform: translateY(-2px); box-shadow: 0 12px 30px rgba(245,158,11,.42); }
 
-    .logo i {
-      font-size: 32px;
-      background: rgba(255, 255, 255, 0.15);
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .terms{ font-size:12px; color:#6b7280; text-align:center; margin:18px 0; }
+    .terms a{ color:#b45309; text-decoration:none; font-weight:700; }
 
-    .logo h1 {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
+    .login{ text-align:center; color:#6b7280; font-size:14px; }
+    .login a{ color:#b45309; font-weight:800; text-decoration:none; }
 
-    .brand-content h2 {
-      font-size: 32px;
-      margin-bottom: 20px;
-      line-height: 1.3;
-    }
-
-    .brand-content p {
-      font-size: 16px;
-      line-height: 1.6;
-      opacity: 0.9;
-      margin-bottom: 25px;
-    }
-
-    .features {
-      margin-top: 30px;
-    }
-
-    .feature {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 18px;
-    }
-
-    .feature i {
-      background: rgba(255, 255, 255, 0.15);
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-    }
-
-    .signup-section {
-      flex: 1;
-      padding: 50px 40px;
-      position: relative;
-    }
-
-    .welcome-bonus {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #f3f9f1;
-      color: #007B55;
-      border: 1px dashed #007B55;
-      border-radius: 50px;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .welcome-bonus i {
-      color: #007B55;
-    }
-
-    .signup-header {
-      margin-bottom: 35px;
-    }
-
-    .signup-header h2 {
-      font-size: 28px;
-      color: #222;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    .signup-header p {
-      color: #6c757d;
-      font-size: 16px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #495057;
-      font-size: 14px;
-    }
-
-    .input-with-icon {
-      position: relative;
-    }
-
-    .input-with-icon i {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #6c757d;
-      font-size: 16px;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 14px 14px 14px 45px;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 15px;
-      transition: all 0.3s;
-      background: #f8f9fa;
-    }
-
-    .form-control:focus {
-      outline: none;
-      border-color: #007B55;
-      box-shadow: 0 0 0 3px rgba(0, 123, 85, 0.1);
-      background: #fff;
-    }
-
-    .password-toggle {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: #6c757d;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 14px;
-      background: #007B55;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-top: 10px;
-    }
-
-    .btn:hover {
-      background: #00563a;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 123, 85, 0.2);
-    }
-
-    .terms {
-      font-size: 13px;
-      color: #6c757d;
-      text-align: center;
-      margin: 20px 0;
-    }
-
-    .terms a {
-      color: #007B55;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .login-link {
-      text-align: center;
-      margin-top: 20px;
-      color: #6c757d;
-      font-size: 15px;
-    }
-
-    .login-link a {
-      color: #007B55;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 25px 0;
-    }
-
-    .divider::before,
-    .divider::after {
-      content: "";
-      flex: 1;
-      border-bottom: 1px solid #e9ecef;
-    }
-
-    .divider span {
-      padding: 0 15px;
-      color: #6c757d;
-      font-size: 14px;
-    }
-
-    .social-login {
-      display: flex;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .social-btn {
-      flex: 1;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #e9ecef;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .social-btn:hover {
-      background: #f8f9fa;
-      transform: translateY(-2px);
-    }
-
-    @media (max-width: 900px) {
-      .container {
-        flex-direction: column;
-      }
-      
-      .brand-section {
-        padding: 30px;
-      }
-      
-      .signup-section {
-        padding: 40px 30px;
-      }
+    @media (max-width: 940px){
+      .container{ flex-direction:column; }
+      .brand{ min-height:180px; }
+      .panel{ padding:36px 24px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="brand-section">
+    <!-- Minimal brand side (no statements) -->
+    <aside class="brand">
       <div class="logo">
-        <i class="fas fa-wallet"></i>
-        <h1>SonicEarn</h1>
+        <i class="fas fa-vault"></i>
+        <h1>Success Pay Investments</h1>
       </div>
-      <div class="brand-content">
-        <h2>Start Earning with Every Interaction</h2>
-        <p>Join thousands of users who are earning daily by completing simple tasks, referring friends, and engaging with our platform.</p>
-        
-        <div class="features">
-          <div class="feature">
-            <i class="fas fa-gift"></i>
-            <div>
-              <strong>Welcome Bonus:</strong> Get 2000 UGX instantly upon signup
-            </div>
-          </div>
-          <div class="feature">
-            <i class="fas fa-users"></i>
-            <div>
-              <strong>Referral Program:</strong> Earn commissions for every friend you refer
-            </div>
-          </div>
-          <div class="feature">
-            <i class="fas fa-shield-alt"></i>
-            <div>
-              <strong>Secure Platform:</strong> Your data and earnings are protected
-            </div>
-          </div>
+      <div class="orb" aria-hidden="true"></div>
+      <div class="ring" aria-hidden="true"></div>
+    </aside>
+
+    <!-- Form side -->
+    <main class="panel">
+      <div class="header">
+        <h2>Create Your Account</h2>
+        <p>Set up your profile to get started.</p>
+      </div>
+
+      <!-- The ONLY visible “statement” (rest removed), with new look & placement -->
+      <div class="bonus-card" role="status" aria-live="polite">
+        <i class="fas fa-gift"></i>
+        <div>
+          <b>Welcome bonus:</b> <span>3,000 UGX instantly after signup.</span>
         </div>
       </div>
-    </div>
-    
-    <div class="signup-section">
-      <div class="welcome-bonus">
-        <i class="fas fa-gift"></i>
-        <span>2000 UGX Welcome Bonus</span>
-      </div>
-      
-      <div class="signup-header">
-        <h2>Create Your Account</h2>
-        <p>Join SonicEarn today and start earning</p>
-      </div>
-      
-      <form id="signupForm">
+
+      <form id="signupForm" autocomplete="on">
         <div class="form-group">
           <label for="name">Full Name</label>
-          <div class="input-with-icon">
+          <div class="input-wrap">
             <i class="fas fa-user"></i>
-            <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
+            <input id="name" class="control" type="text" placeholder="Enter your full name" required>
           </div>
         </div>
-        
+
+        <div class="form-group">
+          <label for="nickname">Nickname </label>
+          <div class="input-wrap">
+            <i class="fas fa-id-badge"></i>
+            <input id="nickname" class="control" type="text" placeholder="Choose a unique nickname" required>
+          </div>
+          <p class="hint">3–20 characters; letters, numbers, underscore. Example: <em>junior233@</em></p>
+        </div>
+
         <div class="form-group">
           <label for="email">Email Address</label>
-          <div class="input-with-icon">
+          <div class="input-wrap">
             <i class="fas fa-envelope"></i>
-            <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+            <input id="email" class="control" type="email" placeholder="Enter your email" required>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label for="phone">Phone Number</label>
-          <div class="input-with-icon">
+          <div class="input-wrap">
             <i class="fas fa-phone"></i>
-            <input type="text" id="phone" class="form-control" placeholder="Enter your phone number" required>
+            <input id="phone" class="control" type="text" placeholder="Enter your phone number" required>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label for="password">Password</label>
-          <div class="input-with-icon">
+          <div class="input-wrap">
             <i class="fas fa-lock"></i>
-            <input type="password" id="password" class="form-control" placeholder="Create a password" required>
-            <button type="button" class="password-toggle" id="togglePassword">
+            <input id="password" class="control" type="password" placeholder="Create a password" required>
+            <button type="button" id="togglePassword" class="toggle" aria-label="Toggle password visibility">
               <i class="fas fa-eye"></i>
             </button>
           </div>
         </div>
-        
+
         <button type="button" class="btn" onclick="signUp()">
           <i class="fas fa-user-plus"></i> Create Account
         </button>
-        
-        <div class="terms">
-          By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
-        </div>
-        
-        <div class="divider">
-          <span>OR</span>
-        </div>
-        
-        <div class="social-login">
-          <button type="button" class="social-btn">
-            <i class="fab fa-google"></i> Google
-          </button>
-          <button type="button" class="social-btn">
-            <i class="fab fa-facebook-f"></i> Facebook
-          </button>
-        </div>
-        
-        <div class="login-link">
-          Already have an account? <a href="login.html">Login here</a>
-        </div>
+
+        <p class="terms">By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+        <p class="login">Already have an account? <a href="login.html">Login here</a></p>
       </form>
-    </div>
+    </main>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDK / Logic -->
   <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, doc, setDoc, serverTimestamp,
+      collection, query, where, getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // ✅ New Firebase config for sonicearn-a13b3
-  const firebaseConfig = {
-    apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
-    authDomain: "sonicearn-a13b3.firebaseapp.com",
-    projectId: "sonicearn-a13b3",
-    storageBucket: "sonicearn-a13b3.firebasestorage.app",
-    messagingSenderId: "538538743721",
-    appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
-    measurementId: "G-XGD292PMYM"
-  };
+    // === SAME FIREBASE CONFIG (unchanged) ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
+      authDomain: "sonicearn-a13b3.firebaseapp.com",
+      projectId: "sonicearn-a13b3",
+      storageBucket: "sonicearn-a13b3.firebasestorage.app",
+      messagingSenderId: "538538743721",
+      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
+      measurementId: "G-XGD292PMYM"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  // Capture referrer from URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const referrerPhone = urlParams.get("ref");
+    // Capture referrer nickname from URL (?ref= or ?nick=)
+    const params = new URLSearchParams(window.location.search);
+    const referrerNickname = (params.get("ref") || params.get("nick") || "").trim();
 
-  // Toggle password visibility
-  document.getElementById('togglePassword').addEventListener('click', function() {
-    const passwordInput = document.getElementById('password');
-    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordInput.setAttribute('type', type);
-    this.querySelector('i').classList.toggle('fa-eye');
-    this.querySelector('i').classList.toggle('fa-eye-slash');
-  });
+    // Password toggle
+    document.getElementById('togglePassword').addEventListener('click', function(){
+      const input = document.getElementById('password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
 
-  window.signUp = async function () {
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const password = document.getElementById("password").value;
+    // Nickname helpers
+    const sanitizeNickname = (n) => n.replace(/[^a-zA-Z0-9_]/g, '');
+    const isValidNickname = (n) => /^[a-zA-Z0-9_]{3,20}$/.test(n);
 
-    if (!name || !email || !phone || !password) {
-      alert("Please fill all fields.");
-      return;
+    async function nicknameExists(nLower){
+      const q = query(collection(db,"users"), where("nicknameLower","==", nLower));
+      const snap = await getDocs(q);
+      return !snap.empty;
     }
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+    window.signUp = async function(){
+      const name = document.getElementById("name").value.trim();
+      const nicknameRaw = document.getElementById("nickname").value.trim();
+      const nickname = sanitizeNickname(nicknameRaw);
+      const nicknameLower = nickname.toLowerCase();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const password = document.getElementById("password").value;
 
-      const userData = {
-        userId: user.uid,
-        name: name,
-        email: email,
-        phone: phone,
-        referrerPhone: referrerPhone || null,
-        referrerId: null,
-        refereesIDs: [],
-        totalEarnings: 2000, // Welcome bonus
-        totalWithdrawn: 0,
-        totalDeposits: 0,
-        accountBalance: 2000, // Welcome bonus added to balance
-        timestamp: serverTimestamp()
-      };
+      if(!name || !nickname || !email || !phone || !password){
+        alert("Please fill all fields.");
+        return;
+      }
+      if(!isValidNickname(nickname)){
+        alert("Nickname must be 3–20 characters (letters, numbers, underscore).");
+        return;
+      }
 
-      await setDoc(doc(db, "users", user.uid), userData);
-      window.location.href = "index.html";
-    } catch (error) {
-      alert("Error: " + error.message);
-    }
-  };
-</script>
+      try{
+        // Ensure unique nickname
+        if(await nicknameExists(nicknameLower)){
+          alert("Nickname is already taken. Choose another.");
+          return;
+        }
+
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const user = cred.user;
+
+        const WELCOME_BONUS = 3000;
+
+        const userData = {
+          userId: user.uid,
+          name,
+          email,
+          phone,
+          // referral by nickname
+          referrerNickname: referrerNickname || null,
+          referrerId: null,
+
+          nickname,
+          nicknameLower,
+
+          totalEarnings: WELCOME_BONUS,
+          totalWithdrawn: 0,
+          totalDeposits: 0,
+          accountBalance: WELCOME_BONUS,
+
+          timestamp: serverTimestamp()
+        };
+
+        await setDoc(doc(db,"users", user.uid), userData);
+        window.location.href = "index.html";
+      }catch(err){
+        alert("Error: " + err.message);
+      }
+    };
+  </script>
 </body>
 </html>
