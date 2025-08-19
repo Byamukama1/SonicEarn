@@ -2,269 +2,278 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Make Deposit - Success pay</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Deposit — Success Pay Investments</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-      color: #333;
+    :root{
+      --navy-900:#0b1220; --navy-800:#111827;
+      --ink:#0b1324; --muted:#64748b; --card:#ffffff; --border:#e5e7eb;
+      --accent:#f59e0b; --accent2:#d97706;
+      --shadow:0 16px 40px rgba(2,6,23,.10);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(160deg,var(--navy-900) 0%, #101a2f 60%, var(--navy-800) 100%);
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans",sans-serif;
+      color:var(--ink);
+    }
+    .app{min-height:100svh; display:flex; flex-direction:column}
+
+    header{
+      padding:16px; color:#f8fafc;
+      background:linear-gradient(135deg, rgba(245,158,11,.18), transparent 40%);
+      display:flex; align-items:center; gap:12px;
+    }
+    header i{
+      width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+      background:rgba(245,158,11,.14); color:#f59e0b; border:1px solid rgba(245,158,11,.22);
+    }
+    header h1{margin:0; font-size:18px; font-weight:800}
+
+    .sheet{
+      background:#fff; border-radius:18px 18px 0 0; margin-top:8px;
+      padding:18px 16px 24px;
     }
 
-    .container {
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    /* Pay-to numbers */
+    .pay-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px}
+    .pay-card{
+      border:1px solid var(--border); background:var(--card); border-radius:16px; box-shadow:var(--shadow);
+      padding:12px;
+    }
+    .pay-card h3{margin:0 0 6px 0; font-size:14px}
+    .num{font-weight:800}
+    .small{color:var(--muted); font-size:12px}
+    .actions{display:flex; gap:8px; margin-top:8px}
+    .mini{
+      flex:1; display:flex; align-items:center; justify-content:center; gap:6px;
+      border:1px solid var(--border); background:#f9fafb; color:#111827; border-radius:12px; padding:8px; text-decoration:none;
+      font-size:13px;
     }
 
-    h2 {
-      color: #2e7d32;
-      text-align: center;
-      margin-bottom: 20px;
+    /* Form */
+    .form{
+      border:1px solid var(--border); background:var(--card); border-radius:16px; box-shadow:var(--shadow);
+      padding:14px; margin:6px 0 14px;
+    }
+    .form h2{margin:0 0 10px 0; font-size:16px}
+    .row{display:grid; gap:10px; grid-template-columns:1fr 1fr}
+    label{display:block; font-weight:700; font-size:13px; margin-bottom:6px}
+    input, select{
+      width:100%; padding:12px; border:1px solid var(--border); border-radius:12px; background:#f8fafc; font-size:14px;
+    }
+    input:focus, select:focus{outline:none; border-color:#c7d2fe; box-shadow:0 0 0 4px rgba(79,70,229,.12); background:#fff}
+    .btn{
+      width:100%; padding:14px; border:none; border-radius:14px; font-weight:800; letter-spacing:.2px; color:#111827;
+      background:linear-gradient(180deg,var(--accent) 0%, var(--accent2) 100%); box-shadow:0 12px 26px rgba(217,119,6,.28); cursor:pointer; margin-top:8px;
     }
 
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: 600;
+    /* List */
+    .list{
+      border:1px solid var(--border); background:#fff; border-radius:16px; box-shadow:var(--shadow);
+      overflow:hidden;
     }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+    .list header{all:unset; display:block; padding:12px 14px; background:#f9fafb; border-bottom:1px solid #f1f5f9; font-weight:800}
+    .item{padding:12px 14px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #f1f5f9}
+    .item:last-child{border-bottom:none}
+    .mono{font-feature-settings:"tnum" 1,"lnum" 1}
+    .badge{
+      padding:6px 10px; border-radius:999px; font-size:12px; font-weight:800;
+      background:#fff7ed; color:#92400e; border:1px solid #fde68a;
     }
-
-    button {
-      padding: 10px 20px;
-      background-color: #2e7d32;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .note {
-      font-size: 14px;
-      background-color: #fff9e6;
-      color: #a05a00;
-      padding: 12px;
-      border-left: 5px solid #fbc02d;
-      margin-top: 20px;
-      border-radius: 6px;
-    }
-
-    .history {
-      margin-top: 30px;
-    }
-
-    .deposit-item {
-      background-color: #f1f8e9;
-      border-left: 4px solid #2e7d32;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 5px;
-      position: relative;
-    }
-
-    .cancel-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #c62828;
-      color: #fff;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .number-box {
-      margin-bottom: 15px;
-      padding: 10px;
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .mtn-box {
-      background-color: #e8f5e9;
-    }
-
-    .airtel-box {
-      background-color: #e3f2fd;
-    }
-
-    .copy-btn {
-      background-color: #2e7d32;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .airtel-box .copy-btn {
-      background-color: #1565c0;
-    }
-
-    #submitBtn {
-      width: 100%;
-      margin-top: 20px;
-      font-size: 16px;
-    }
+    .muted{color:var(--muted); font-size:12px}
+    .skeleton{background:linear-gradient(90deg,#f3f4f6 25%,#eceef2 37%,#f3f4f6 63%); background-size:400% 100%; animation:sh 1.2s infinite}
+    @keyframes sh{0%{background-position:100% 0}100%{background-position:0 0}}
+    @media (max-width:720px){.row{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>💰 Make a Deposit on</h2>
+  <div class="app">
+    <header>
+      <i class="fas fa-arrow-down"></i>
+      <h1>Deposit</h1>
+    </header>
 
-    <div class="number-box mtn-box">
-      <div><strong>MTN:</strong> 0763230572 - Jockas Alinaitwe</div>
-      <button class="copy-btn" onclick="copyToClipboard('0763230572')">Copy</button>
-    </div>
+    <div class="sheet">
+      <!-- Pay-to numbers (copy only) -->
+      <div class="pay-grid">
+        <div class="pay-card">
+          <h3>Ssali Najibu</h3>
+          <div class="num">0740340137</div>
+          <div class="small">Send your deposit to this number</div>
+          <div class="actions">
+            <button class="mini" onclick="copyNum('0740340137')"><i class="fas fa-copy"></i> Copy</button>
+          </div>
+        </div>
+        <div class="pay-card">
+          <h3>Kisuule  Francis</h3>
+          <div class="num">0780433087</div>
+          <div class="small">Send your deposit to this number</div>
+          <div class="actions">
+            <button class="mini" onclick="copyNum('0780433087')"><i class="fas fa-copy"></i> Copy</button>
+          </div>
+        </div>
+      </div>
 
-    <div class="number-box airtel-box">
-      <div><strong>Airtel:</strong> 0754672397 - BAMBALIRA SILVER</div>
-      <button class="copy-btn" onclick="copyToClipboard('0754672397')">Copy</button>
-    </div>
+      <!-- Form -->
+      <div class="form">
+        <h2>Submit Deposit</h2>
+        <div class="row">
+          <div>
+            <label for="amount">Amount (UGX)</label>
+            <input id="amount" type="number" inputmode="numeric" min="20000" step="1000" placeholder="e.g., 50000" required>
+          </div>
+          <div>
+            <label for="toNumber">Sent To</label>
+            <select id="toNumber" required>
+              <option value="" disabled selected>Select number you sent to</option>
+              <option value="0740340137|Ssali Najibu">0740340137 — Ssali Najibu</option>
+              <option value="0780433087|Kisuule  Francis">0780433087 — Kisuule  Francis</option>
+            </select>
+          </div>
+        </div>
 
-    <label>Phone Holder Name</label>
-    <input type="text" id="holderName" placeholder="Enter name" />
+        <div class="row">
+          <div>
+            <label for="senderPhone">Your phone used to send money</label>
+            <input id="senderPhone" type="tel" inputmode="numeric" placeholder="e.g., 0701234567" required>
+          </div>
+          <div></div>
+        </div>
 
-    <label>Phone Number</label>
-    <input type="text" id="phoneNumber" placeholder="Enter phone number" />
+        <button class="btn" id="submitBtn" onclick="submitDeposit()">Submit</button>
+      </div>
 
-    <label>Amount (UGX)</label>
-    <input type="number" id="amount" placeholder="Enter amount" />
-
-    <button id="submitBtn">Submit</button>
-
-    <div class="note">
-      <strong>NOTE:</strong> Please verify that all information is correct before submitting. Reversing transactions may lead to penalties or account restrictions.
-    </div>
-
-    <div class="history">
-      <h3>📋 Deposit History</h3>
-      <div id="depositList">Loading...</div>
+      <!-- User deposits, random order -->
+      <div class="list" id="listWrap" style="display:none">
+        <header>Your Deposits</header>
+        <div id="items"></div>
+      </div>
     </div>
   </div>
 
+  <!-- Firebase + Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
-      getFirestore, collection, addDoc, getDocs, serverTimestamp, query, where, deleteDoc, doc
+      getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import {
-      getAuth, onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+    // SAME CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
       authDomain: "sonicearn-a13b3.firebaseapp.com",
       projectId: "sonicearn-a13b3",
-      storageBucket: "sonicearn-a13b3.appspot.com",
+      storageBucket: "sonicearn-a13b3.firebasestorage.app",
       messagingSenderId: "538538743721",
-      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8"
+      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
+      measurementId: "G-XGD292PMYM"
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    const submitBtn = document.getElementById("submitBtn");
-    const depositList = document.getElementById("depositList");
+    // Copy helper
+    window.copyNum = async (n) => {
+      try { await navigator.clipboard.writeText(n); alert("Number copied: " + n); }
+      catch { alert("Copied: " + n); }
+    };
 
-    let hasPending = false;
+    // Formatter
+    const fmt = n => new Intl.NumberFormat('en-UG', { maximumFractionDigits: 0 }).format(Math.round(n));
+
+    // Shuffle (random order)
+    function shuffle(arr){
+      for(let i=arr.length-1; i>0; i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    let currentUser = null;
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-        return;
-      }
-
-      const loadHistory = async () => {
-        const q = query(collection(db, "deposits"), where("userId", "==", user.uid));
-        const snapshot = await getDocs(q);
-        depositList.innerHTML = "";
-        hasPending = false;
-
-        snapshot.forEach(docSnap => {
-          const data = docSnap.data();
-          const div = document.createElement("div");
-          div.className = "deposit-item";
-          div.innerHTML = `
-            <strong>${data.phone}</strong><br>
-            Amount: UGX ${data.amount} <br>
-            Status: <strong>${data.status || "Pending"}</strong>
-          `;
-
-          if (data.status === "Pending") {
-            hasPending = true;
-            const cancelBtn = document.createElement("button");
-            cancelBtn.className = "cancel-btn";
-            cancelBtn.innerText = "Cancel";
-            cancelBtn.onclick = async () => {
-              await deleteDoc(doc(db, "deposits", docSnap.id));
-              alert("⛔ Pending deposit canceled.");
-              await loadHistory();
-            };
-            div.appendChild(cancelBtn);
-          }
-
-          depositList.appendChild(div);
-        });
-      };
-
-      await loadHistory();
-
-      submitBtn.onclick = async () => {
-        if (hasPending) {
-          alert("⚠️ You already have a pending deposit.\nPlease complete or cancel it before making another.");
-          return;
-        }
-
-        const name = document.getElementById("holderName").value.trim();
-        const phone = document.getElementById("phoneNumber").value.trim();
-        const amount = parseInt(document.getElementById("amount").value);
-
-        if (!name || !phone || !amount) {
-          alert("Please fill in all fields correctly.");
-          return;
-        }
-
-        await addDoc(collection(db, "deposits"), {
-          name,
-          phone,
-          amount,
-          userId: user.uid,
-          status: "Pending",
-          timestamp: serverTimestamp()
-        });
-
-        alert("✅ Deposit submitted successfully.");
-        document.getElementById("holderName").value = "";
-        document.getElementById("phoneNumber").value = "";
-        document.getElementById("amount").value = "";
-        await loadHistory();
-      };
+      if(!user){ location.href = 'login.html'; return; }
+      currentUser = user;
+      await loadMyDeposits();
     });
 
-    window.copyToClipboard = function (text) {
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Copied: " + text);
-      });
+    // Submit deposit -> deposits collection (pending)
+    window.submitDeposit = async function(){
+      if(!currentUser){ alert("Please login first."); return; }
+      const btn = document.getElementById('submitBtn');
+      const amountEl = document.getElementById('amount');
+      const toSel   = document.getElementById('toNumber');
+      const senderEl = document.getElementById('senderPhone');
+
+      const amount = Number(amountEl.value);
+      const toVal = toSel.value;
+      const senderPhone = senderEl.value.trim();
+
+      if(!amount || amount < 20000){ alert("Enter at least 20,000 UGX."); return; }
+      if(!toVal){ alert("Select the number you sent to."); return; }
+      if(!senderPhone){ alert("Enter the phone you used to send money."); return; }
+
+      const [paymentToPhone, paymentToName] = toVal.split('|');
+
+      btn.disabled = true; btn.textContent = "Submitting...";
+
+      try{
+        await addDoc(collection(db, 'deposits'), {
+          userId: currentUser.uid,
+          amount: amount,
+          paymentToPhone,
+          paymentToName,
+          senderPhone,              // <-- user's phone used to send
+          status: 'pending',
+          createdAt: serverTimestamp()
+        });
+        amountEl.value = "";
+        toSel.value = "";
+        senderEl.value = "";
+        await loadMyDeposits();
+        alert("Deposit submitted. Status: pending.");
+      }catch(err){
+        alert("Error: " + err.message);
+      }finally{
+        btn.disabled = false; btn.textContent = "Submit";
+      }
     };
+
+    // Load user's deposits in random order; display amount + status
+    async function loadMyDeposits(){
+      const q = query(collection(db, 'deposits'), where('userId','==', currentUser.uid));
+      const snap = await getDocs(q);
+      const items = [];
+      snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+      shuffle(items);
+
+      const listWrap = document.getElementById('listWrap');
+      const itemsEl = document.getElementById('items');
+      if(items.length === 0){
+        listWrap.style.display = "none";
+        itemsEl.innerHTML = "";
+        return;
+      }
+      listWrap.style.display = "block";
+      itemsEl.innerHTML = items.map(x => `
+        <div class="item">
+          <div>
+            <div class="mono" style="font-weight:800;">UGX ${fmt(x.amount || 0)}</div>
+            <div class="muted">
+              To: ${x.paymentToName ?? ''}${x.paymentToPhone ? ' • ' + x.paymentToPhone : ''} &nbsp;|&nbsp; Your phone: ${x.senderPhone ?? ''}
+            </div>
+          </div>
+          <span class="badge">${(x.status||'pending').toUpperCase()}</span>
+        </div>
+      `).join('');
+    }
   </script>
 </body>
 </html>
