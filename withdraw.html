@@ -1,202 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Withdraw - Success pay</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Withdraw — Success Pay Investments</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f6f9;
-      margin: 0;
-      padding: 0;
-      color: #333;
+    :root{
+      --navy-900:#0b1220; --navy-800:#111827;
+      --ink:#0b1324; --muted:#64748b; --card:#ffffff; --border:#e5e7eb;
+      --accent:#f59e0b; --accent2:#d97706;
+      --shadow:0 16px 40px rgba(2,6,23,.10);
     }
-    .container {
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(160deg,var(--navy-900) 0%, #101a2f 60%, var(--navy-800) 100%);
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans",sans-serif;
+      color:var(--ink);
     }
-    h2 {
-      color: #2a8c4a;
-      text-align: center;
-      margin-bottom: 10px;
+    header{
+      padding:16px; color:#f8fafc;
+      background:linear-gradient(135deg, rgba(245,158,11,.18), transparent 40%);
+      display:flex; align-items:center; justify-content:flex-start; gap:12px;
     }
-    #balanceDisplay {
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: #222;
+    .brand{display:flex; gap:12px; align-items:center}
+    .brand i{
+      width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+      background:rgba(245,158,11,.14); color:#f59e0b; border:1px solid rgba(245,158,11,.22);
     }
-    input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
+    .brand h1{margin:0; font-size:18px; font-weight:800}
+
+    .sheet{background:#fff; border-radius:18px 18px 0 0; margin-top:8px; padding:16px}
+    .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+    .card{border:1px solid var(--border); background:#fff; border-radius:16px; box-shadow:var(--shadow); padding:14px;}
+    .title{font-size:16px; font-weight:800; margin-bottom:6px}
+    .muted{color:var(--muted); font-size:12px}
+    .mono{font-feature-settings:"tnum" 1,"lnum" 1}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    @media (max-width:680px){.row{grid-template-columns:1fr}}
+    label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
+    input{
+      width:100%; padding:12px; border:1px solid var(--border); border-radius:12px; background:#f8fafc; font-size:14px;
     }
-    .btn {
-      background-color: #2a8c4a;
-      color: white;
-      padding: 12px;
-      width: 100%;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      margin-top: 10px;
-      cursor: pointer;
+    input:focus{outline:none; border-color:#c7d2fe; box-shadow:0 0 0 4px rgba(79,70,229,.12); background:#fff}
+    .btn{
+      padding:12px; border:none; border-radius:12px; font-weight:800; cursor:pointer;
+      background:linear-gradient(180deg,var(--accent) 0%, var(--accent2) 100%); color:#111827;
+      box-shadow:0 10px 24px rgba(217,119,6,.28);
+      width:100%;
     }
-    .note {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #a00;
-      background: #fff5f5;
-      padding: 10px;
-      border-radius: 8px;
-      border-left: 4px solid #e74c3c;
+    .list{display:grid; gap:10px}
+    .w-card{
+      border:1px solid var(--border); border-radius:12px; padding:10px;
+      display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; background:#fff;
     }
-    .history {
-      margin-top: 20px;
-    }
-    .history-item {
-      background: #f9f9f9;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      border-left: 4px solid #2a8c4a;
-    }
+    .chip{background:#f9fafb; border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-size:12px; margin-right:6px; display:inline-block}
+    .skeleton{background:linear-gradient(90deg,#f3f4f6 25%,#eceef2 37%,#f3f4f6 63%); background-size:400% 100%; animation:sh 1.2s infinite}
+    @keyframes sh{0%{background-position:100% 0}100%{background-position:0 0}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2><i class="fas fa-hand-holding-usd"></i> Withdraw</h2>
-    <div id="balanceDisplay">Current Balance: UGX <span id="currentBalance">Loading...</span></div>
-    
-    <input type="text" id="holderName" placeholder="Holder Name" required />
-    <input type="tel" id="phoneNumber" placeholder="Phone Number" required />
-    <input type="number" id="amount" placeholder="Withdraw Amount" required />
-    
-    <button class="btn" id="submitWithdraw">Submit Withdraw</button>
-
-    <div class="note">
-      ⚠️ A 10% withdrawal charge will be applied. Minimum withdraw is UGX 5000.
+  <header>
+    <div class="brand">
+      <i class="fas fa-wallet"></i>
+      <div>
+        <h1>Withdraw</h1>
+        <div class="muted">Success Pay Investments</div>
+      </div>
     </div>
+  </header>
 
-    <div class="history" id="withdrawHistory"></div>
+  <div class="sheet">
+    <div class="grid">
+      <!-- Withdraw form -->
+      <div class="card">
+        <div class="title">Request Withdrawal</div>
+        <div class="muted" id="balanceInfo">Loading balance…</div>
+        <div class="muted" id="depositInfo" style="margin-top:4px;"></div>
+
+        <div style="height:8px"></div>
+
+        <div class="row">
+          <div>
+            <label>Amount (UGX)</label>
+            <input type="number" id="amount" inputmode="numeric" placeholder="Minimum 3000"/>
+          </div>
+          <div>
+            <label>Receiving Phone Number</label>
+            <input type="tel" id="recvPhone" placeholder="07XXXXXXXX"/>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>Registered Names on that Number</label>
+            <input type="text" id="recvName" placeholder="Registered names"/>
+          </div>
+          <div>
+            <label>Net after 10% fee (info)</label>
+            <input id="netPreview" class="mono" disabled placeholder="—"/>
+          </div>
+        </div>
+
+        <div style="height:8px"></div>
+        <button class="btn" id="submitBtn"><i class="fas fa-paper-plane"></i>&nbsp; Submit Withdrawal</button>
+        <div class="muted" style="margin-top:8px">Note: a 10% processing fee is applied on approval.</div>
+      </div>
+
+      <!-- Pending withdrawals -->
+      <div class="card">
+        <div class="title">Your Pending Withdrawals</div>
+        <div id="pendingList" class="list">
+          <div class="w-card skeleton" style="height:58px;border-radius:12px"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getFirestore, collection, addDoc, serverTimestamp, getDocs,
-    query, orderBy, doc, getDoc, updateDoc
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  <!-- Firebase + Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, collection, doc, getDoc, getDocs, addDoc, updateDoc,
+      query, where, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
-    authDomain: "sonicearn-a13b3.firebaseapp.com",
-    projectId: "sonicearn-a13b3",
-    storageBucket: "sonicearn-a13b3.appspot.com",
-    messagingSenderId: "538538743721",
-    appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
+      authDomain: "sonicearn-a13b3.firebaseapp.com",
+      projectId: "sonicearn-a13b3",
+      storageBucket: "sonicearn-a13b3.firebasestorage.app",
+      messagingSenderId: "538538743721",
+      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
+      measurementId: "G-XGD292PMYM"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  let currentUser;
-  let currentBalance = 0;
+    const byId = (id)=>document.getElementById(id);
+    const fmt = (n)=>new Intl.NumberFormat('en-UG',{maximumFractionDigits:0}).format(Math.round(n||0));
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) return window.location.href = "login.html";
-    currentUser = user;
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-      currentBalance = userDoc.data().accountBalance || 0;
-      document.getElementById("currentBalance").textContent = currentBalance.toLocaleString();
-      loadWithdrawHistory();
+    let CURRENT_USER = null;
+
+    function updateNetPreview(){
+      const amt = Number(byId('amount').value||0);
+      if(amt>0) byId('netPreview').value = 'UGX ' + fmt(amt*0.9);
+      else byId('netPreview').value = '';
     }
-  });
+    byId('amount').addEventListener('input', updateNetPreview);
 
-  async function loadWithdrawHistory() {
-    const q = query(collection(db, "withdraws"), orderBy("createdAt", "desc"));
-    const snapshot = await getDocs(q);
-    const historyContainer = document.getElementById("withdrawHistory");
-    historyContainer.innerHTML = "<h4>Paid Withdrawals</h4>";
+    async function loadUserData(uid){
+      const snap = await getDoc(doc(db,'users', uid));
+      if(!snap.exists()){ alert('User record not found.'); return; }
+      const u = snap.data();
+      byId('balanceInfo').textContent = `Account balance: UGX ${fmt(u.accountBalance || 0)}`;
+      const hasDep = Number(u.totalDeposits || 0) > 0;
+      byId('depositInfo').textContent = hasDep ? 'You have deposit history.' : 'You must deposit at least once before withdrawing.';
 
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      if (data.status === "Paid" && data.userId === currentUser.uid) {
-        const item = document.createElement("div");
-        item.classList.add("history-item");
-        item.innerHTML = `<strong>Phone:</strong> ${data.phoneNumber}<br>
-                          <strong>Amount:</strong> UGX ${data.amount.toLocaleString()}<br>
-                          <strong>Status:</strong> ${data.status}`;
-        historyContainer.appendChild(item);
-      }
-    });
-  }
-
-  document.getElementById("submitWithdraw").addEventListener("click", async () => {
-    const holderName = document.getElementById("holderName").value.trim();
-    const phoneNumber = document.getElementById("phoneNumber").value.trim();
-    const amount = parseFloat(document.getElementById("amount").value);
-
-    if (!holderName || !phoneNumber || isNaN(amount)) {
-      return alert("Please fill in all fields correctly.");
-    }
-
-    if (amount < 5000) {
-      return alert("Minimum withdraw is UGX 5000.");
+      // Load pending withdrawals
+      const q1 = query(collection(db,'withdrawals'), where('userId','==', uid));
+      const s1 = await getDocs(q1);
+      const items = [];
+      s1.forEach(d=>{
+        const x=d.data();
+        if((x.status||'pending')==='pending'){ items.push({id:d.id, ...x}); }
+      });
+      const list = byId('pendingList');
+      if(items.length===0){ list.innerHTML = '<div class="muted">No pending withdrawals.</div>'; return; }
+      list.innerHTML = items.map(x=>`
+        <div class="w-card">
+          <div>
+            <div><strong>UGX ${fmt(x.amount||0)}</strong></div>
+            <div class="muted">Status: ${x.status || 'pending'} • To: ${x.receiverName || ''} • ${x.receiverPhone || ''}</div>
+          </div>
+          <div class="chip mono">Requested: ${x.createdAt && x.createdAt.toDate ? x.createdAt.toDate().toLocaleString() : ''}</div>
+        </div>
+      `).join('');
     }
 
-    if (amount > currentBalance) {
-      return alert("You cannot withdraw more than your account balance.");
-    }
+    async function submitWithdrawal(){
+      if(!CURRENT_USER) return;
+      const snap = await getDoc(doc(db,'users', CURRENT_USER.uid));
+      if(!snap.exists()){ alert('User record not found.'); return; }
+      const u = snap.data();
 
-    const chargeNotice = Math.round(amount * 0.1);
-    const confirmMsg = `Note: A 10% processing fee (UGX ${chargeNotice.toLocaleString()}) will be applied by sonic Earn. You will receive UGX ${(amount - chargeNotice).toLocaleString()}.\nDo you want to proceed?`;
-    const confirmed = confirm(confirmMsg);
-    if (!confirmed) return;
+      const amount = Math.round(Number(byId('amount').value||0));
+      const receiverPhone = (byId('recvPhone').value||'').trim();
+      const receiverName  = (byId('recvName').value||'').trim();
 
-    try {
-      // Step 1: Submit withdraw request
-      await addDoc(collection(db, "withdraws"), {
-        holderName,
-        phoneNumber,
-        amount,
-        userId: currentUser.uid,
-        status: "Pending",
+      if(amount < 3000){ alert('Minimum withdrawal is UGX 3000.'); return; }
+      if(!receiverPhone){ alert('Enter receiving phone number.'); return; }
+      if(!receiverName){ alert('Enter registered names for that number.'); return; }
+      if(!(Number(u.totalDeposits||0) > 0)){ alert('You must have deposited at least once before withdrawing.'); return; }
+      if(amount > Number(u.accountBalance || 0)){ alert('Amount exceeds your account balance.'); return; }
+
+      await addDoc(collection(db,'withdrawals'), {
+        userId: CURRENT_USER.uid,
+        amount: amount,
+        status: 'pending',
+        receiverPhone, receiverName,
         createdAt: serverTimestamp()
       });
+      await updateDoc(doc(db,'users', CURRENT_USER.uid), {
+        accountBalance: (u.accountBalance - amount)
+      });
 
-      // Step 2: Deduct amount from user's accountBalance
-      const userRef = doc(db, "users", currentUser.uid);
-      const newBalance = currentBalance - amount;
-      await updateDoc(userRef, { accountBalance: newBalance });
-
-      // Step 3: Update local balance and reset form
-      currentBalance = newBalance;
-      document.getElementById("currentBalance").textContent = currentBalance.toLocaleString();
-      alert("Withdraw request submitted. Amount has been deducted from your balance.");
-
-      document.getElementById("holderName").value = "";
-      document.getElementById("phoneNumber").value = "";
-      document.getElementById("amount").value = "";
-      loadWithdrawHistory();
-
-    } catch (err) {
-      console.error("Withdraw error:", err);
-      alert("Failed to submit withdraw.");
+      alert('Withdrawal submitted.');
+      byId('amount').value = ''; byId('recvPhone').value = ''; byId('recvName').value = ''; byId('netPreview').value = '';
+      await loadUserData(CURRENT_USER.uid);
     }
-  });
-</script>
+
+    byId('submitBtn').addEventListener('click', ()=> submitWithdrawal().catch(err=>alert(err.message)));
+
+    onAuthStateChanged(auth, async (user)=>{
+      if(!user){ location.href='login.html'; return; }
+      CURRENT_USER = user;
+      await loadUserData(user.uid);
+    });
+  </script>
 </body>
 </html>
