@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Your Investments — Success Pay Investments</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root{
+      --navy-900:#0b1220; --navy-800:#111827;
+      --ink:#0b1324; --muted:#64748b; --card:#ffffff; --border:#e5e7eb;
+      --accent:#f59e0b; --accent2:#d97706;
+      --shadow:0 16px 40px rgba(2,6,23,.10);
+      --ok:#065f46; --ok-bg:#ecfdf5; --ok-br:#a7f3d0;
+      --warn:#92400e; --warn-bg:#fff7ed; --warn-br:#fde68a;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(160deg,var(--navy-900) 0%, #101a2f 60%, var(--navy-800) 100%);
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans",sans-serif;
+      color:var(--ink);
+    }
+    header{
+      padding:16px; color:#f8fafc;
+      background:linear-gradient(135deg, rgba(245,158,11,.18), transparent 40%);
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .brand{display:flex; gap:12px; align-items:center}
+    .brand i{
+      width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+      background:rgba(245,158,11,.14); color:#f59e0b; border:1px solid rgba(245,158,11,.22);
+    }
+    .brand h1{margin:0; font-size:18px; font-weight:800}
+    .link{
+      display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-weight:800; color:#111827;
+      padding:10px 12px; border-radius:12px;
+      background:linear-gradient(180deg,var(--accent),var(--accent2)); box-shadow:0 10px 24px rgba(217,119,6,.28);
+    }
+
+    .sheet{background:#fff; border-radius:18px 18px 0 0; margin-top:8px; padding:18px 14px 24px}
+    .summary{
+      border:1px solid var(--border); background:#fff; border-radius:16px; box-shadow:var(--shadow);
+      padding:12px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px;
+    }
+    @media (max-width:820px){.summary{grid-template-columns:1fr}}
+    .sum-item .label{font-size:12px;color:var(--muted)}
+    .sum-item .value{font-weight:800;font-size:18px}
+    .mono{font-feature-settings:"tnum" 1,"lnum" 1}
+
+    .list{display:grid; gap:12px}
+    .card{
+      border:1px solid var(--border); background:var(--card); border-radius:16px; box-shadow:var(--shadow);
+      padding:12px; display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center;
+    }
+    .title{font-size:15px; font-weight:800}
+    .muted{color:var(--muted); font-size:12px}
+    .row{display:flex; flex-wrap:wrap; gap:10px; margin-top:6px}
+    .chip{
+      background:#f9fafb; border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-size:12px;
+    }
+    .badge{
+      padding:6px 10px; border-radius:999px; font-size:12px; font-weight:800;
+      background:var(--ok-bg); color:var(--ok); border:1px solid var(--ok-br); display:inline-block; text-transform:uppercase;
+    }
+    .badge.warn{background:var(--warn-bg); color:var(--warn); border-color:var(--warn-br)}
+    .skeleton{background:linear-gradient(90deg,#f3f4f6 25%,#eceef2 37%,#f3f4f6 63%); background-size:400% 100%; animation:sh 1.2s infinite}
+    @keyframes sh{0%{background-position:100% 0}100%{background-position:0 0}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <i class="fas fa-chart-line"></i>
+      <div>
+        <h1>Your Investments</h1>
+        <div class="muted">Success Pay Investments</div>
+      </div>
+    </div>
+    <a class="link" href="index.html"><i class="fas fa-home"></i> Home</a>
+  </header>
+
+  <div class="sheet">
+    <section class="summary">
+      <div class="sum-item">
+        <div class="label">Active Investments</div>
+        <div id="sumActive" class="value mono skeleton" style="height:26px;border-radius:6px"></div>
+      </div>
+      <div class="sum-item">
+        <div class="label">Total Amount Invested</div>
+        <div id="sumAmount" class="value mono skeleton" style="height:26px;border-radius:6px"></div>
+      </div>
+      <div class="sum-item">
+        <div class="label">Total Earned (to date)</div>
+        <div id="sumEarned" class="value mono skeleton" style="height:26px;border-radius:6px"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="title" style="margin:6px 0 10px">Investments</div>
+      <div id="list" class="list">
+        <div class="card skeleton" style="height:64px;border-radius:16px"></div>
+        <div class="card skeleton" style="height:64px;border-radius:16px"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Firebase + Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, collection, query, where, getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // Same Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
+      authDomain: "sonicearn-a13b3.firebaseapp.com",
+      projectId: "sonicearn-a13b3",
+      storageBucket: "sonicearn-a13b3.firebasestorage.app",
+      messagingSenderId: "538538743721",
+      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
+      measurementId: "G-XGD292PMYM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const fmt = n => new Intl.NumberFormat('en-UG',{maximumFractionDigits:0}).format(Math.round(n||0));
+    const when = ts => {
+      try{ if(ts?.toDate) return ts.toDate().toLocaleString(); }catch{}
+      return '';
+    };
+    function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+
+    async function loadInvestments(uid){
+      // fetch without orderBy to avoid any composite index requirements
+      const q1 = query(collection(db,'investments'), where('userId','==', uid));
+      const snap = await getDocs(q1);
+      const items = [];
+      snap.forEach(d => items.push({ id:d.id, ...d.data() }));
+      shuffle(items); // random order
+
+      // summary
+      const sumActive = items.filter(x => (x.status||'active')==='active').length;
+      const sumAmount = items.reduce((a,b)=>a+Number(b.amount||0),0);
+      const sumEarned = items.reduce((a,b)=>a+Number(b.totalEarned||0),0);
+
+      setText('sumActive', String(sumActive));
+      setText('sumAmount', 'UGX ' + fmt(sumAmount));
+      setText('sumEarned', 'UGX ' + fmt(sumEarned));
+
+      const list = document.getElementById('list');
+      if(items.length===0){
+        list.innerHTML = '<div class="muted">You have no investments yet.</div>';
+        return;
+      }
+
+      list.innerHTML = items.map(x=>{
+        const status = (x.status||'active').toLowerCase();
+        const badgeClass = status==='active' ? 'badge' : 'badge warn';
+        return `
+          <div class="card">
+            <div>
+              <div class="title">Amount: UGX ${fmt(x.amount||0)}</div>
+              <div class="muted">Started: ${when(x.createdAt)}</div>
+              <div class="row">
+                <span class="chip mono">Daily rate: ${(Number(x.dailyRate||0)*100).toFixed(0)}%</span>
+                <span class="chip mono">Daily earning: UGX ${fmt(x.dailyEarning||0)}</span>
+                <span class="chip mono">Remaining days: ${fmt(x.remainingDays||0)}</span>
+                <span class="chip mono">Total earned: UGX ${fmt(x.totalEarned||0)}</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+              <span class="${badgeClass}">${status.toUpperCase()}</span>
+              <div class="muted mono" style="text-align:right">ID: ${x.id}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setText(id, text){
+      const el = document.getElementById(id);
+      el.classList.remove('skeleton');
+      el.textContent = text;
+    }
+
+    onAuthStateChanged(auth, async (user)=>{
+      if(!user){ location.href='login.html'; return; }
+      await loadInvestments(user.uid);
+    });
+  </script>
+</body>
+</html>
