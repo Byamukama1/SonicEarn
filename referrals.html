@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Referrals — Success Pay Investments</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root{
+      --navy-900:#0b1220; --navy-800:#111827;
+      --ink:#0b1324; --muted:#64748b; --card:#ffffff; --border:#e5e7eb;
+      --accent:#f59e0b; --accent2:#d97706; --shadow:0 16px 40px rgba(2,6,23,.08);
+      --navH:64px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(160deg,var(--navy-900) 0%, #101a2f 60%, var(--navy-800) 100%);
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans",sans-serif;
+      color:var(--ink);
+    }
+    .app{min-height:100svh; display:flex; flex-direction:column; padding-bottom:calc(var(--navH) + env(safe-area-inset-bottom,0px));}
+
+    /* HEADER */
+    header{
+      padding:16px; color:#f8fafc;
+      background:linear-gradient(135deg, rgba(245,158,11,.18), transparent 40%);
+      display:flex; align-items:center; gap:12px;
+    }
+    header i{
+      width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+      background:rgba(245,158,11,.14); color:#f59e0b; border:1px solid rgba(245,158,11,.22);
+    }
+    header h1{margin:0;font-size:18px;font-weight:800}
+    header small{color:#d1d5db}
+
+    /* SHEET */
+    .sheet{background:#fff;border-radius:18px 18px 0 0;margin-top:8px;padding:16px}
+
+    /* REF LINK BOX */
+    .ref-box{display:grid; gap:10px; background:#fff; border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); padding:14px}
+    .row{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center}
+    .input{
+      width:100%; padding:12px 12px; border:1px solid var(--border); border-radius:12px; background:#f9fafb;
+      font-weight:700; color:#111827; font-size:14px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; gap:8px; justify-content:center; cursor:pointer;
+      padding:12px 14px; border:none; border-radius:12px; font-weight:800; color:#111827;
+      background:linear-gradient(180deg,var(--accent),var(--accent2)); box-shadow:0 12px 26px rgba(217,119,6,.28);
+    }
+    .btn i{color:#111827}
+    .muted{color:var(--muted); font-size:12px}
+
+    /* REFERRAL CARDS */
+    .list{display:grid; gap:12px; margin-top:14px}
+    .card{
+      background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); padding:14px
+    }
+    .title{font-size:16px; font-weight:800; margin:0 0 8px}
+    .chip{display:inline-block; background:#f9fafb; border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-size:12px; margin-right:6px}
+    .mono{font-feature-settings:"tnum" 1,"lnum" 1}
+    .invests{margin-top:8px; display:grid; gap:8px}
+    .invest{
+      display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center;
+      background:#fff; border:1px solid var(--border); border-radius:12px; padding:10px;
+    }
+    .invest small{color:var(--muted)}
+    .pill{
+      padding:6px 10px; border-radius:999px; border:1px solid #fde68a;
+      background:#fff7ed; color:#92400e; font-weight:800; font-size:12px;
+    }
+
+    /* NAV */
+    nav{
+      position:fixed; left:0; right:0; bottom:0; height:var(--navH);
+      background:#fff; border-top:1px solid var(--border);
+      display:grid; grid-template-columns:repeat(4,1fr);
+      padding-bottom:env(safe-area-inset-bottom,0px); z-index:10;
+    }
+    .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+      color:var(--muted);font-size:11px;text-decoration:none}
+    .tab i{font-size:18px}
+    .tab.active{color:#111827;font-weight:700}
+    .tab.active i{color:#d97706}
+
+    /* Skeleton */
+    .skeleton{background:linear-gradient(90deg,#f3f4f6 25%,#eceef2 37%,#f3f4f6 63%); background-size:400% 100%; animation:sh 1.2s infinite}
+    @keyframes sh{0%{background-position:100% 0}100%{background-position:0 0}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <i class="fas fa-user-friends"></i>
+      <div>
+        <h1>Refer & Earn</h1>
+        <small>Share your link. Earn when your friends invest.</small>
+      </div>
+    </header>
+
+    <div class="sheet">
+      <!-- Referral Link -->
+      <div class="ref-box">
+        <div class="muted">Your referral link (opens our signup):</div>
+        <div class="row">
+          <input id="refLink" class="input mono" readonly value="Generating…" />
+          <button id="copyBtn" class="btn"><i class="fas fa-copy"></i> Copy</button>
+        </div>
+        <div class="muted">The link uses your nickname so we can track signups.</div>
+      </div>
+
+      <!-- Referrals list -->
+      <div class="list" id="refList" style="margin-top:14px">
+        <div class="card">
+          <div class="title">Your Referrals</div>
+          <div class="muted">Loading…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation (same structure as other pages) -->
+  <nav>
+    <a class="tab" href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+    <a class="tab" href="investments.html"><i class="fas fa-chart-line"></i><span>Investments</span></a>
+    <a class="tab active" href="referrals.html" aria-current="page"><i class="fas fa-user-friends"></i><span>Refer</span></a>
+    <a class="tab" href="account.html"><i class="fas fa-user"></i><span>Account</span></a>
+  </nav>
+
+  <!-- Firebase + Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, collection, query, where, getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // Firebase config (same project)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
+      authDomain: "sonicearn-a13b3.firebaseapp.com",
+      projectId: "sonicearn-a13b3",
+      storageBucket: "sonicearn-a13b3.firebasestorage.app",
+      messagingSenderId: "538538743721",
+      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
+      measurementId: "G-XGD292PMYM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const $ = id => document.getElementById(id);
+    const fmt = n => new Intl.NumberFormat('en-UG',{maximumFractionDigits:0}).format(Math.round(Number(n||0)));
+    const shuffle = (arr)=>{ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr; };
+
+    function makeSignupUrl(nickname){
+      // Replace the filename at the end of the current path with signup.html
+      const base = location.origin + location.pathname.replace(/[^/]+$/,'signup.html');
+      return `${base}?ref=${encodeURIComponent(nickname)}`;
+    }
+
+    async function buildReferralLink(uid){
+      const snap = await getDoc(doc(db,'users', uid));
+      if(!snap.exists()){
+        $('refLink').value = 'Error: user not found';
+        return { nick:null, link:null };
+      }
+      const u = snap.data();
+      const nickname = u?.nickname || u?.nicknameLower || '';
+      const nickLower = (u?.nicknameLower || (nickname||'').toLowerCase());
+      const link = makeSignupUrl(nickname);
+      $('refLink').value = link;
+      return { nick:nickname, nickLower, link };
+    }
+
+    async function loadReferrals(nickname, nicknameLower){
+      const list = $('refList');
+      list.innerHTML = '';
+
+      // Firestore can't do case-insensitive equals, so use "in" on two values
+      const q = query(
+        collection(db,'users'),
+        where('referrerNickname','in',[nickname, nicknameLower].filter(Boolean))
+      );
+      const snap = await getDocs(q);
+
+      if (snap.empty){
+        list.innerHTML = `
+          <div class="card">
+            <div class="title">Your Referrals</div>
+            <div class="muted">You have no referrals yet. Share your link above!</div>
+          </div>`;
+        return;
+      }
+
+      // Collect basic referral user info
+      const refs = [];
+      snap.forEach(d=>{
+        const x = d.data();
+        refs.push({
+          id:d.id,
+          name: x.name || '(no name)',
+          phone: x.phone || '—',
+          totalDeposits: Number(x.totalDeposits||0),
+          totalEarnings: Number(x.totalEarnings||0),
+          totalWithdrawn: Number(x.totalWithdrawn||0),
+          accountBalance: Number(x.accountBalance||0),
+          timestamp: x.timestamp?.toDate ? x.timestamp.toDate() : null
+        });
+      });
+
+      // Shuffle for random display
+      shuffle(refs);
+
+      // For each referral, also pull their investments
+      const cards = await Promise.all(refs.map(async r=>{
+        const invQ = query(collection(db,'investments'), where('userId','==', r.id));
+        const invSnap = await getDocs(invQ);
+        const invs = [];
+        invSnap.forEach(di=>{
+          const iv = di.data();
+          invs.push({
+            amount: Number(iv.amount||0),
+            status: iv.status || '—',
+            remainingDays: iv.remainingDays ?? '—',
+            createdAt: iv.createdAt?.toDate ? iv.createdAt.toDate() : null
+          });
+        });
+        shuffle(invs);
+
+        const invHtml = invs.length === 0
+          ? `<div class="muted">No investments yet.</div>`
+          : `<div class="invests">
+              ${invs.map(iv=>`
+                <div class="invest">
+                  <div>
+                    <div><strong>UGX <span class="mono">${fmt(iv.amount)}</span></strong></div>
+                    <small>${iv.createdAt ? iv.createdAt.toLocaleString() : ''}</small>
+                  </div>
+                  <div class="pill">${iv.status.toUpperCase()} • ${iv.remainingDays ?? '—'} days left</div>
+                </div>
+              `).join('')}
+             </div>`;
+
+        return `
+          <div class="card">
+            <div class="title">${r.name}</div>
+            <div class="chip mono">Phone: ${r.phone}</div>
+            <div class="chip mono">Balance: UGX ${fmt(r.accountBalance)}</div>
+            <div class="chip mono">Deposits: UGX ${fmt(r.totalDeposits)}</div>
+            <div class="chip mono">Earnings: UGX ${fmt(r.totalEarnings)}</div>
+            <div class="chip mono">Withdrawn: UGX ${fmt(r.totalWithdrawn)}</div>
+            ${invHtml}
+          </div>
+        `;
+      }));
+
+      list.innerHTML = `
+        <div class="card">
+          <div class="title">Your Referrals (${refs.length})</div>
+        </div>
+        ${cards.join('')}
+      `;
+    }
+
+    // Copy button
+    $('copyBtn').addEventListener('click', async ()=>{
+      const el = $('refLink');
+      el.select(); el.setSelectionRange(0, 99999);
+      try{
+        await navigator.clipboard.writeText(el.value);
+        const old = $('copyBtn').innerHTML;
+        $('copyBtn').innerHTML = '<i class="fas fa-check"></i> Copied';
+        setTimeout(()=> $('copyBtn').innerHTML = old, 1200);
+      }catch{
+        // Fallback for older browsers
+        document.execCommand('copy');
+      }
+    });
+
+    onAuthStateChanged(auth, async (user)=>{
+      if(!user){ location.href='login.html'; return; }
+      try{
+        const { nick, nickLower } = await buildReferralLink(user.uid);
+        await loadReferrals(nick || '', nickLower || '');
+      }catch(err){
+        alert(err.message);
+      }
+    });
+  </script>
+</body>
+</html>
