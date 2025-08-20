@@ -1,256 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>success pay</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Account — Success Pay Investments</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, sans-serif;
+    :root{
+      --navy-900:#0b1220; --navy-800:#111827;
+      --ink:#0b1324; --muted:#64748b; --card:#ffffff; --border:#e5e7eb;
+      --accent:#f59e0b; --accent2:#d97706; --shadow:0 16px 40px rgba(2,6,23,.08);
+      --navH:64px;
     }
-    :root {
-      --primary: #007B55;
-      --primary-dark: #00563a;
-      --secondary: #f8f9fa;
-      --accent: #FFC107;
-      --text: #333;
-      --text-light: #6c757d;
-      --success: #28a745;
-      --card-bg: #fff;
-      --bg: #f5f7fa;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(160deg,var(--navy-900) 0%, #101a2f 60%, var(--navy-800) 100%);
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans",sans-serif;
+      color:var(--ink);
     }
-    body {
-      background-color: white;
-      color: var(--text);
-      line-height: 1.6;
-      padding-bottom: 70px;
-    }
-    .container { max-width: 600px; margin: auto; padding: 0 15px; }
+    .app{min-height:100svh; display:flex; flex-direction:column; padding-bottom:calc(var(--navH) + env(safe-area-inset-bottom,0px));}
 
-    .header {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white; padding: 15px 0; position: sticky; top: 0; z-index: 100;
+    /* HEADER */
+    header{
+      padding:16px; color:#f8fafc;
+      background:linear-gradient(135deg, rgba(245,158,11,.18), transparent 40%);
+      display:flex; align-items:center; gap:12px;
     }
-    .header-content {
-      display: flex; justify-content: space-between; align-items: center;
+    header i{
+      width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+      background:rgba(245,158,11,.14); color:#f59e0b; border:1px solid rgba(245,158,11,.22);
     }
-    .logo {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .logo i { font-size: 24px; }
-    .logo h1 { font-size: 20px; font-weight: 700; }
+    header h1{margin:0;font-size:18px;font-weight:800}
+    header small{color:#d1d5db}
 
-    .user-actions {
-      display: flex; gap: 15px;
-    }
-    .user-actions button {
-      background: rgba(255,255,255,0.15); border: none; border-radius: 50%;
-      width: 36px; height: 36px; color: white;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.3s;
-    }
-    .user-actions button:hover {
-      background: rgba(255,255,255,0.25);
-    }
+    /* SHEET */
+    .sheet{background:#fff;border-radius:18px 18px 0 0;margin-top:8px;padding:16px}
 
-    .profile-section {
-      background: white; border-radius: 12px; padding: 25px; margin: 25px 0;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); position: relative; overflow: hidden;
-    }
-    .profile-section::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 8px;
-      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-      border-radius: 12px 12px 0 0;
-    }
-    .profile-header {
-      display: flex; align-items: center; gap: 18px; margin-bottom: 20px;
-    }
-    .avatar {
-      width: 60px; height: 60px; border-radius: 50%;
-      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-      display: flex; align-items: center; justify-content: center;
-      border: 2px solid var(--primary);
-    }
-    .avatar i { font-size: 28px; color: var(--primary); }
+    /* CARDS */
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:14px}
+    .title{font-size:16px;font-weight:800;margin:0 0 10px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:640px){.row{grid-template-columns:1fr}}
+    .item{background:#f9fafb;border:1px solid var(--border);border-radius:12px;padding:10px}
+    .label{font-size:12px;color:var(--muted)}
+    .val{font-weight:700}
+    .mono{font-feature-settings:"tnum" 1,"lnum" 1}
 
-    .user-info h1 { font-size: 22px; color: var(--primary); margin-bottom: 5px; }
-    .user-info p { color: var(--text-light); font-size: 15px; }
+    .btn, .link{
+      display:inline-flex;align-items:center;gap:8px;justify-content:center;text-decoration:none;cursor:pointer;
+      padding:12px 14px;border:none;border-radius:12px;font-weight:800;color:#111827;
+      background:linear-gradient(180deg,var(--accent),var(--accent2)); box-shadow:0 12px 26px rgba(217,119,6,.28);
+    }
+    .btn i,.link i{color:#111827}
 
-    .profile-details {
-      margin-top: 20px; border-top: 1px solid #f0f0f0; padding-top: 20px;
-    }
-    .detail-item {
-      display: flex; justify-content: space-between;
-      padding: 12px 0; border-bottom: 1px solid #f5f5f5;
-    }
+    .support-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:680px){.support-actions{grid-template-columns:1fr}}
+    .sub{font-size:12px;color:var(--muted);margin-top:6px}
 
-    .detail-label { color: var(--text-light); font-weight: 500; }
-    .detail-value { font-weight: 600; color: var(--text); }
+    /* NAV */
+    nav{
+      position:fixed; left:0; right:0; bottom:0; height:var(--navH);
+      background:#fff; border-top:1px solid var(--border);
+      display:grid; grid-template-columns:repeat(4,1fr);
+      padding-bottom:env(safe-area-inset-bottom,0px); z-index:10;
+    }
+    .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+      color:var(--muted);font-size:11px;text-decoration:none}
+    .tab i{font-size:18px}
+    .tab.active{color:#111827;font-weight:700}
+    .tab.active i{color:#d97706}
 
-    .account-management {
-      background: white; border-radius: 12px; padding: 25px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); margin-bottom: 25px;
-    }
-
-    .section-title {
-      font-size: 20px; font-weight: 600; color: var(--primary);
-      margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
-    }
-
-    .btn-grid {
-      display: grid; grid-template-columns: 1fr; gap: 0;
-    }
-
-    .btn {
-      padding: 16px 0; font-size: 16px;
-      color: var(--text); border: none; background: none;
-      text-align: left; cursor: pointer; display: flex;
-      align-items: center; gap: 15px; transition: 0.2s;
-      border-bottom: 1px solid #f0f0f0; text-decoration: none;
-    }
-    .btn:last-child { border-bottom: none; }
-    .btn:hover { color: var(--primary); }
-    .btn i { font-size: 20px; width: 30px; color: var(--primary); }
-    .btn-logout i { color: #F44336; }
-
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      display: flex; justify-content: space-around;
-      background-color: white; border-top: 1px solid #e0e0e0;
-      padding: 12px 0; box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.07);
-    }
-
-    .nav-item {
-      display: flex; flex-direction: column; align-items: center;
-      text-decoration: none; color: var(--text-light); font-size: 12px;
-      transition: all 0.3s ease; padding: 5px 15px; border-radius: 15px;
-    }
-    .nav-item i { font-size: 20px; margin-bottom: 3px; }
-    .nav-item.active {
-      color: var(--primary); background: #e8f5e9;
-    }
-    .nav-item.active i { color: var(--primary); }
-
-    @media (max-width: 480px) {
-      .profile-header {
-        flex-direction: column; text-align: center;
-      }
-      .avatar { margin-bottom: 15px; }
-      .container { padding: 15px; }
-    }
+    /* Skeleton */
+    .skeleton{background:linear-gradient(90deg,#f3f4f6 25%,#eceef2 37%,#f3f4f6 63%); background-size:400% 100%; animation:sh 1.2s infinite}
+    @keyframes sh{0%{background-position:100% 0}100%{background-position:0 0}}
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header">
-    <div class="container">
-      <div class="header-content">
-        <div class="logo">
-          <i class="fas fa-wallet"></i>
-          <h1>SonicEarn</h1>
+  <div class="app">
+    <header>
+      <i class="fas fa-user-circle"></i>
+      <div>
+        <h1>My Account</h1>
+        <small>Success Pay Investments</small>
+      </div>
+    </header>
+
+    <div class="sheet">
+      <div class="grid">
+        <!-- Profile & Contact -->
+        <div class="card">
+          <h2 class="title">Profile</h2>
+          <div class="row">
+            <div class="item"><div class="label">Name</div><div id="uName" class="val skeleton" style="height:20px;border-radius:6px"></div></div>
+            <div class="item"><div class="label">Nickname</div><div id="uNick" class="val skeleton" style="height:20px;border-radius:6px"></div></div>
+            <div class="item"><div class="label">Email</div><div id="uEmail" class="val skeleton" style="height:20px;border-radius:6px"></div></div>
+            <div class="item"><div class="label">Phone</div><div id="uPhone" class="val skeleton" style="height:20px;border-radius:6px"></div></div>
+            <div class="item"><div class="label">Referrer</div><div id="uRef" class="val skeleton" style="height:20px;border-radius:6px"></div></div>
+            <div class="item"><div class="label">User ID (UID)</div><div id="uId" class="val mono skeleton" style="height:20px;border-radius:6px"></div></div>
+          </div>
+          <div class="sub">Tip: Keep your account details up to date to receive payouts smoothly.</div>
         </div>
-        <div class="user-actions">
-          <button><i class="fas fa-bell"></i></button>
-          <button><i class="fas fa-cog"></i></button>
+
+        <!-- Financials -->
+        <div class="card">
+          <h2 class="title">Financials</h2>
+          <div class="row">
+            <div class="item"><div class="label">Account Balance (UGX)</div><div id="uBal" class="val mono skeleton" style="height:20px;border-radius:6px"></div></div>
+            <div class="item"><div class="label">Total Deposits (UGX)</div><div id="uDep" class="val mono skeleton" style="height:20px;border-radius:6px"></div></div>
+            <div class="item"><div class="label">Total Withdrawn (UGX)</div><div id="uWit" class="val mono skeleton" style="height:20px;border-radius:6px"></div></div>
+            <div class="item"><div class="label">Total Earnings (UGX)</div><div id="uEarn" class="val mono skeleton" style="height:20px;border-radius:6px"></div></div>
+          </div>
+          <div class="sub">Totals reflect approved transactions and processed earnings.</div>
         </div>
       </div>
-    </div>
-  </header>
 
-  <div class="container">
-    <!-- Profile Section -->
-    <div class="profile-section">
-      <div class="profile-header">
-        <div class="avatar">
-          <i class="fas fa-user"></i>
+      <!-- Support -->
+      <div class="card" style="margin-top:12px">
+        <h2 class="title">Customer Support</h2>
+        <div class="support-actions">
+          <a class="link" target="_blank" href="https://wa.me/256741371770?text=Hello%20Support%201%2C%20I%20need%20help%20with%20my%20Success%20Pay%20account.">
+            <i class="fab fa-whatsapp"></i> Chat Support 1 — +256 741 371 770
+          </a>
+          <a class="link" target="_blank" href="https://wa.me/256780288376?text=Hello%20Support%202%2C%20I%20need%20help%20with%20my%20Success%20Pay%20account.">
+            <i class="fab fa-whatsapp"></i> Chat Support 2 — +256 780 288 376
+          </a>
+          <a class="link" target="_blank" href="https://wa.me/256767009532?text=Hello%20Support%203%2C%20I%20need%20help%20with%20my%20Success%20Pay%20account.">
+            <i class="fab fa-whatsapp"></i> Chat Support 3 — +256 767 009 532
+          </a>
+          <a class="link" target="_blank" href="https://chat.whatsapp.com/EwhkDTa6yHC6V9tSFcgyGM?mode=ac_t">
+            <i class="fab fa-whatsapp"></i> Join WhatsApp Group
+          </a>
         </div>
-        <div class="user-info">
-          <h1 id="userName">Loading...</h1>
-          <p id="userStatus">Member</p>
-        </div>
+        <div class="sub">All support buttons open WhatsApp chats directly.</div>
       </div>
-      <div class="profile-details">
-        <div class="detail-item">
-          <div class="detail-label">Email</div>
-          <div class="detail-value" id="userEmail">...</div>
+
+      <!-- Quick Actions -->
+      <div class="card" style="margin-top:12px">
+        <h2 class="title">Quick Actions</h2>
+        <div class="support-actions">
+          <a class="btn" href="deposit.html"><i class="fas fa-arrow-down"></i> Deposit</a>
+          <a class="btn" href="withdraw.html"><i class="fas fa-arrow-up"></i> Withdraw</a>
         </div>
-        <div class="detail-item">
-          <div class="detail-label">Phone</div>
-          <div class="detail-value" id="userPhone">...</div>
-        </div>
-       
-    <!-- Account Management -->
-    <div class="account-management">
-      <h2 class="section-title"><i class="fas fa-cog"></i> Account Management</h2>
-      <div class="btn-grid">
-        <a class="btn" href="shares.html"><i class="fas fa-layer-group"></i><span>My Shares</span></a>
-        <a class="btn" href="team.html"><i class="fas fa-users"></i><span>My Team</span></a>
-        <a class="btn" href="https://wa.me/256 763 230572" target="_blank"><i class="fab fa-telegram"></i><span>Whatsapp Customer Care</span></a>
-
-        <a class="btn" href="https://t.me/sonicearnofficialgroup" target="_blank"><i class="fab fa-telegram-plane"></i><span>Join Telegram Group</span></a>
-
-<a class="btn" href="https://chat.whatsapp.com/CEOXbM2MrVvDVGvMrXC4R0?mode=ac_t" target="_blank">
-  <i class="fab fa-whatsapp"></i><span>Whatsapp Group</span>
-</a>
-  
-
-        <button class="btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Navigation -->
-  <div class="bottom-nav">
-    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
-    <a href="shares.html" class="nav-item"><i class="fas fa-layer-group"></i><span>Shares</span></a>
-    <a href="team.html" class="nav-item"><i class="fas fa-users"></i><span>Team</span></a>
-    <a href="account.html" class="nav-item active"><i class="fas fa-user"></i><span>Account</span></a>
-  </div>
+  <!-- Bottom Navigation (same as home) -->
+  <nav>
+    <a class="tab" href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+    <a class="tab" href="investments.html"><i class="fas fa-chart-line"></i><span>Investments</span></a>
+    <a class="tab" href="referrals.html"><i class="fas fa-user-friends"></i><span>Refer</span></a>
+    <a class="tab active" href="account.html" aria-current="page"><i class="fas fa-user"></i><span>Account</span></a>
+  </nav>
 
-  <!-- Firebase Script -->
+  <!-- Firebase + Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDqXsmhAt_jDRC3sYzSZ0mJXGLHoQYlPBc",
       authDomain: "sonicearn-a13b3.firebaseapp.com",
       projectId: "sonicearn-a13b3",
-      storageBucket: "sonicearn-a13b3.appspot.com",
+      storageBucket: "sonicearn-a13b3.firebasestorage.app",
       messagingSenderId: "538538743721",
-      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8"
+      appId: "1:538538743721:web:3ca577a8b2a6ba43e416b8",
+      measurementId: "G-XGD292PMYM"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const data = userSnap.data();
-          document.getElementById("userName").textContent = data.name || "User";
-          document.getElementById("userEmail").textContent = data.email || "Not provided";
-          document.getElementById("userPhone").textContent = data.phone || "Not available";
-          document.getElementById("accountLevel").textContent = data.accountLevel || "N/A";
-          document.getElementById("memberSince").textContent = data.createdAt 
-            ? new Date(data.createdAt.seconds * 1000).toDateString() 
-            : "N/A";
-        }
-      } else {
-        window.location.href = "login.html";
-      }
-    });
+    const fmt = n => new Intl.NumberFormat('en-UG',{maximumFractionDigits:0}).format(Math.round(Number(n||0)));
 
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.href = "login.html";
-      });
+    function setText(id, text){
+      const el = document.getElementById(id);
+      el.classList.remove('skeleton');
+      el.textContent = text ?? '—';
+    }
+
+    async function loadUser(uid){
+      const snap = await getDoc(doc(db,'users', uid));
+      const fallback = (v, dash='—') => (v===undefined || v===null || v==='') ? dash : v;
+
+      setText('uId', uid);
+
+      if(!snap.exists()){
+        setText('uName','—'); setText('uNick','—'); setText('uEmail','—'); setText('uPhone','—'); setText('uRef','—');
+        setText('uBal','0'); setText('uDep','0'); setText('uWit','0'); setText('uEarn','0');
+        return;
+      }
+      const u = snap.data();
+      setText('uName',  fallback(u.name));
+      setText('uNick',  fallback(u.nickname));
+      setText('uEmail', fallback(u.email));
+      setText('uPhone', fallback(u.phone));
+      setText('uRef',   fallback(u.referrerNickname));
+      setText('uBal',   'UGX ' + fmt(u.accountBalance));
+      setText('uDep',   'UGX ' + fmt(u.totalDeposits));
+      setText('uWit',   'UGX ' + fmt(u.totalWithdrawn));
+      setText('uEarn',  'UGX ' + fmt(u.totalEarnings));
+    }
+
+    onAuthStateChanged(auth, (user)=>{
+      if(!user){ location.href='login.html'; return; }
+      loadUser(user.uid).catch(err=>alert(err.message));
     });
   </script>
 </body>
