@@ -124,7 +124,7 @@
         <div class="row">
           <div>
             <label for="amount">Amount (UGX)</label>
-            <input id="amount" type="number" inputmode="numeric" min="20000" step="1000" placeholder="e.g., 50000" required>
+            <input id="amount" type="number" inputmode="numeric" min="10000" step="1000" placeholder="e.g., 50000" required>
           </div>
           <div>
             <label for="toNumber">Sent To</label>
@@ -216,7 +216,7 @@
       const toVal = toSel.value;
       const senderPhone = senderEl.value.trim();
 
-      if(!amount || amount < 20000){ alert("Enter at least 20,000 UGX."); return; }
+      if(!amount || amount < 10000){ alert("Enter at least 10,000 UGX."); return; }
       if(!toVal){ alert("Select the number you sent to."); return; }
       if(!senderPhone){ alert("Enter the phone you used to send money."); return; }
 
