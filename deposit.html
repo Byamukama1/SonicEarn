@@ -39,7 +39,7 @@
     }
 
     /* Pay-to numbers */
-    .pay-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px}
+    .pay-grid{display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:14px}
     .pay-card{
       border:1px solid var(--border); background:var(--card); border-radius:16px; box-shadow:var(--shadow);
       padding:12px;
@@ -98,22 +98,14 @@
     </header>
 
     <div class="sheet">
-      <!-- Pay-to numbers (copy only) -->
+      <!-- Pay-to number -->
       <div class="pay-grid">
         <div class="pay-card">
-          <h3>Ssali Najibu</h3>
-          <div class="num">0740340137</div>
+          <h3>Bambalira Silver</h3>
+          <div class="num">0766647669</div>
           <div class="small">Send your deposit to this number</div>
           <div class="actions">
-            <button class="mini" onclick="copyNum('0740340137')"><i class="fas fa-copy"></i> Copy</button>
-          </div>
-        </div>
-        <div class="pay-card">
-          <h3>Kisuule  Francis</h3>
-          <div class="num">0780433087</div>
-          <div class="small">Send your deposit to this number</div>
-          <div class="actions">
-            <button class="mini" onclick="copyNum('0780433087')"><i class="fas fa-copy"></i> Copy</button>
+            <button class="mini" onclick="copyNum('0766647669')"><i class="fas fa-copy"></i> Copy</button>
           </div>
         </div>
       </div>
@@ -130,8 +122,7 @@
             <label for="toNumber">Sent To</label>
             <select id="toNumber" required>
               <option value="" disabled selected>Select number you sent to</option>
-              <option value="0740340137|Ssali Najibu">0740340137 — Ssali Najibu</option>
-              <option value="0780433087|Kisuule  Francis">0780433087 — Kisuule  Francis</option>
+              <option value="0766647669|Bambalira Silver">0766647669 — Bambalira Silver</option>
             </select>
           </div>
         </div>
@@ -230,7 +221,7 @@
           amount: amount,
           paymentToPhone,
           paymentToName,
-          senderPhone,              // <-- user's phone used to send
+          senderPhone,
           status: 'pending',
           createdAt: serverTimestamp()
         });
